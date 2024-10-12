@@ -20,7 +20,7 @@ public class Administrator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the administrator.", example = "1", required = true)
-    @Column(name = "idAdministrador")
+    @Column(name = "idAdministrator")
     @JsonProperty("idAdministrator")
     private int idAdministrator;
 
