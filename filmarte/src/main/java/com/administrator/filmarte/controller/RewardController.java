@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,6 +44,14 @@ public class RewardController {
     @GetMapping
     public List<Reward> getAll(){
         return service.getAll();
+    }
+
+    @Operation(summary = "Get all rewards with pagination")
+    @GetMapping(value = "pagination", params = {"page", "pageSize"})
+    public List<Reward> getAllPaginated(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+            List<Reward> rewards = service.getAll(page, pageSize);
+            return rewards;
     }
 
     @Operation(summary = "Get a reward by its id")

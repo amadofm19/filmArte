@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,6 +45,14 @@ public class CommentController {
     @GetMapping
     public List<Comment> getAll(){
         return service.getAll();
+    }
+
+    @Operation(summary = "Get all comments with pagination")
+    @GetMapping(value = "pagination", params = {"page", "pageSize"})
+    public List<Comment> getAllPaginated(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+            List<Comment> comments = service.getAll(page, pageSize);
+            return comments;
     }
 
     @Operation(summary = "Get a comment by its id")

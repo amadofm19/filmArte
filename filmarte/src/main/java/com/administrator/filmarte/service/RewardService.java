@@ -2,6 +2,8 @@ package com.administrator.filmarte.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.administrator.filmarte.model.Reward;
@@ -26,6 +28,13 @@ public class RewardService {
     @ApiResponse(responseCode = "200", description = "Found rewards", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class)))
     public List<Reward> getAll(){
         return repo.findAll();
+    }
+
+    //Pagination
+    public List<Reward> getAll(int page, int pageSize){
+        PageRequest pageReq = PageRequest.of(page, pageSize);
+        Page<Reward> rewards = repo.findAll(pageReq);
+        return rewards.getContent();
     }
 
     @Operation(summary = "Save a reward", description = "Saves a new or updated reward to the repository.")

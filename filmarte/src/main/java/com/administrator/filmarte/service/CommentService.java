@@ -2,6 +2,8 @@ package com.administrator.filmarte.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.administrator.filmarte.model.Comment;
@@ -25,6 +27,13 @@ public class CommentService {
     @ApiResponse(responseCode = "200", description = "Found comments", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Comment.class)))
     public List<Comment> getAll(){
         return repo.findAll();
+    }
+
+    //Pagination
+    public List<Comment> getAll(int page, int pageSize){
+        PageRequest pageReq = PageRequest.of(page, pageSize);
+        Page<Comment> comments = repo.findAll(pageReq);
+        return comments.getContent();
     }
 
     @Operation(summary = "Save a comment", description = "Saves a new or updated comment to the repository.")

@@ -2,6 +2,8 @@ package com.administrator.filmarte.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.administrator.filmarte.model.Pay;
@@ -25,6 +27,13 @@ public class PayService {
     @ApiResponse(responseCode = "200", description = "Found payments", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pay.class)))
     public List<Pay> getAll(){
         return repo.findAll();
+    }
+
+    //Pagination
+    public List<Pay> getAll(int page, int pageSize){
+        PageRequest pageReq = PageRequest.of(page, pageSize);
+        Page<Pay> pays = repo.findAll(pageReq);
+        return pays.getContent();
     }
 
     @Operation(summary = "Save a payment", description = "Saves a new or updated payment to the repository.")

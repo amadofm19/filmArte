@@ -1,10 +1,17 @@
 package com.administrator.filmarte.model;
 
 import java.sql.Date;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -14,39 +21,57 @@ public class Reward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the reward.", example = "1", required = true)
+    @Column(name = "idReward")
+    @JsonProperty("idReward")
     private int idReward;
 
     @Schema(description = "Name of the reward.", example = "Best Film", required = true)
+    @NotBlank(message = "The name must not be null and must contain at least one non-whitespace character")
+    @Size(min = 1, max = 50, message = "The name must be at most 50 characters, and has at least one character")
+    @Column(name = "nameReward")
+    @JsonProperty("nameReward")
     private String nameReward;
 
     @Schema(description = "Delivery date of the reward.", example = "2023-01-01", required = true)
+    @NotNull(message = "The delivery date must not be null")
+    @Column(name = "deliveryDate")
+    @JsonProperty("deliveryDate")
     private Date deliveryDate;
 
     @Schema(description = "Nomination associated with the reward.", example = "Best Director", required = true)
+    @NotBlank(message = "The nomination must not be null and must contain at least one non-whitespace character")
+    @Size(min = 1, max = 50, message = "The nomination must be at most 50 characters, and has at least one character")
+    @Column(name = "nomination")
+    @JsonProperty("nomination")
     private String nomination;
     
-    public int getIdReward(){
+    public int getIdReward() {
         return idReward;
     }
-    public void setIdReward(int idReward){
+    public void setIdReward(int idReward) {
         this.idReward = idReward;
     }
-    public String getNameReward(){
+    public String getNameReward() {
         return nameReward;
     }
-    public void setNameReward(String nameReward){
+    public void setNameReward(String nameReward) {
         this.nameReward = nameReward;
     }
-    public Date getDeliveryDate(){
+    public Date getDeliveryDate() {
         return deliveryDate;
     }
-    public void setDeliveryDate(Date deliveryDate){
+    public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
-    public String getNomination(){
+    public String getNomination() {
         return nomination;
     }
-    public void setNomination(String nomination){
+    public void setNomination(String nomination) {
         this.nomination = nomination;
+    }
+
+    @Override
+    public String toString() {
+        return idReward + " :: " + nameReward + " :: " + deliveryDate + " :: " + nomination;
     }
 }
