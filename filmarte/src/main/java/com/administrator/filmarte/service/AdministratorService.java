@@ -3,7 +3,10 @@ package com.administrator.filmarte.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
 
 import com.administrator.filmarte.model.Administrator;
 import com.administrator.filmarte.repository.AdministratorRepository;
@@ -13,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 
 @Service
 @Transactional
@@ -26,6 +30,13 @@ public class AdministratorService {
     @ApiResponse(responseCode = "200", description = "Found Administrators", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Administrator.class)))
     public List<Administrator> getAll(){
         return repo.findAll();
+    }
+
+    //Pagination
+    public List<Administrator> getAll(int page, int pageSize){
+        PageRequest pageReq = PageRequest.of(page, pageSize);
+        Page<Administrator> administrators = repo.findAll(pageReq);
+        return administrators.getContent();
     }
 
     @Operation(summary = "Save an administrator", description = "Saves a new or updated administrator to the repository.")

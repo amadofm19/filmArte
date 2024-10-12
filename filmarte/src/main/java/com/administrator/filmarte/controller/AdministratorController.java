@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.administrator.filmarte.model.Administrator;
@@ -43,6 +44,14 @@ public class AdministratorController {
     @GetMapping
     public List<Administrator> getAll () {
         return service.getAll();
+    }
+
+    @Operation(summary = "Get all administrators with pagination")
+    @GetMapping(value = "pagination", params = {"page", "pageSize"})
+    public List<Administrator> getAllPaginated(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+            List<Administrator> administrators = service.getAll(page, pageSize);
+            return administrators;
     }
 
     @Operation(summary = "Get an administrator by their id")
