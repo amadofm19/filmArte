@@ -1,33 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.administrator.filmarte.exception;
 
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeoutException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import jakarta.persistence.EntityNotFoundException;
 
-/**
- *
- * @author ARACELI
- */
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<?> handleException(NoSuchElementException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The requested items is not registered");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The requested item is not registered");
     }
 
     @ExceptionHandler(SQLException.class)
@@ -78,4 +70,14 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid number format: " + e.getMessage());
     }
 
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @RequestMapping(produces = "application/json")
+    public ResponseEntity<?> handleNoHandlerFoundException(NoHandlerFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Incorrect URL: " + e.getRequestURL());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+    }
 }
