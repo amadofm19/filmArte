@@ -53,41 +53,48 @@ public class Pay {
     @JsonProperty("paymentMethod")
     private String paymentMethod;
 
-    
-    // Relación muchos a uno con la entidad Subscription
-    @ManyToOne 
-    @JoinColumn(name = "idSubscription", nullable = false) 
+    // ReELACION CON SUSCRIPCION
+    @ManyToOne
+    @JoinColumn(name = "idSubscription", nullable = false)
     @JsonProperty("subscription")
     private Subscription subscription;
-    
-    
+
     public int getIdPay() {
         return idPay;
     }
+
     public void setIdPay(int idPay) {
         this.idPay = idPay;
     }
+
     public float getAmount() {
         return amount;
     }
+
     public void setAmount(float amount) {
         this.amount = amount;
     }
+
     public String getCurrency() {
         return currency;
     }
+
     public void setCurrency(String currency) {
         this.currency = currency;
     }
+
     public Date getPaymentDate() {
         return paymentDate;
     }
+
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
+
     public String getPaymentMethod() {
         return paymentMethod;
     }
+
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }

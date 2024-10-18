@@ -74,17 +74,17 @@ public class Subscription {
     @JsonProperty("renewalDate")
     private Date renewalDate;
 
-     // Relación uno a uno con la entidad User
-    @OneToOne // Indica que una suscripción pertenece a un único usuario
-    @JoinColumn(name = "idUser", nullable = false) // Clave foránea que referencia a User
+    // RELACION CON USUARIO
+    @OneToOne
+    @JoinColumn(name = "idUser", nullable = false)
     @JsonProperty("user")
-    private User user; 
-    
-      // Relación uno a muchos con la entidad Pay
-    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Indica que una suscripción puede tener muchos pagos
+    private User user;
+
+    // RELACION CON PAGO
+    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonProperty("payments")
     private List<Pay> payments;
-    
+
     public int getIdSubscription() {
         return idSubscription;
     }
@@ -143,6 +143,8 @@ public class Subscription {
 
     @Override
     public String toString() {
-        return "Subscription{" + "idSubscription=" + idSubscription + ", membershipType=" + membershipType + ", cost=" + cost + ", duration=" + duration + ", paymentMethod=" + paymentMethod + ", startDate=" + startDate + ", renewalDate=" + renewalDate + '}';
+        return "Subscription{" + "idSubscription=" + idSubscription + ", membershipType=" + membershipType + ", cost="
+                + cost + ", duration=" + duration + ", paymentMethod=" + paymentMethod + ", startDate=" + startDate
+                + ", renewalDate=" + renewalDate + '}';
     }
 }

@@ -35,10 +35,10 @@ public class FavoritesList {
 
     @NotNull(message = "La duración no puede ser nula.")
     private int duration; // Duración en minutos
-    
-     // Relación muchos a uno con la entidad User
-    @ManyToOne // Indica que una lista de favoritos pertenece a un único usuario
-    @JoinColumn(name = "idUser", nullable = false) // Clave foránea que referencia a User
+
+    // RELACION CON USUARIO
+    @ManyToOne
+    @JoinColumn(name = "idUser", nullable = false)
     @JsonProperty("user")
     private User user;
 

@@ -44,35 +44,41 @@ public class Comment {
     @Column(name = "type")
     @JsonProperty("type")
     private String type;
-    
-    
-    // RELACION N:1 CON USUARIO
+
+    // RELACION CON USUARIO
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUser", nullable = false) // Foreign key to the User entity
+    @JoinColumn(name = "idUser", nullable = false)
     @JsonProperty("user")
     private User user;
 
     public int getIdComment() {
         return idComment;
     }
+
     public void setIdComment(int idComment) {
         this.idComment = idComment;
     }
+
     public String getAuthor() {
         return author;
     }
+
     public void setAuthor(String author) {
         this.author = author;
     }
+
     public String getContent() {
         return content;
     }
+
     public void setContent(String content) {
         this.content = content;
     }
+
     public String getType() {
         return type;
     }
+
     public void setType(String type) {
         this.type = type;
     }

@@ -36,9 +36,6 @@ public class History {
     @JoinColumn(name = "idUser", nullable = false) 
     private User user;
 
-    
-   
-
     public int getIdHistory() {
         return idHistory;
     }

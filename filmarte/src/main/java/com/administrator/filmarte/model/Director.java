@@ -1,6 +1,5 @@
 package com.administrator.filmarte.model;
 
-
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.GeneratedValue;
@@ -19,17 +18,12 @@ public class Director {
     private String firstName;
     private String lastNameFather;
     private String lastNameMother;
-    
-    
-    
-    //RELACIONES
-    // RRELACION CON PELICULA 
-    @OneToMany(mappedBy = "director") 
+
+    // RELACIONES
+    // RRELACION CON PELICULA
+    @OneToMany(mappedBy = "director")
     private Set<Movie> movies = new HashSet<>();
 
-    
-    
-    
     public int getIdDirector() {
         return idDirector;
     }
@@ -64,13 +58,8 @@ public class Director {
 
     @Override
     public String toString() {
-        return "Director{" + "idDirector=" + idDirector + ", firstName=" + firstName + ", lastNameFather=" + lastNameFather + ", lastNameMother=" + lastNameMother + ", movies=" + movies + '}';
+        return "Director{" + "idDirector=" + idDirector + ", firstName=" + firstName + ", lastNameFather="
+                + lastNameFather + ", lastNameMother=" + lastNameMother + ", movies=" + movies + '}';
     }
 
-   
-
-    
-
-    
 }
-

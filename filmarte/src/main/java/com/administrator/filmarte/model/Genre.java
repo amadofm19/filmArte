@@ -25,13 +25,11 @@ public class Genre {
 
     @Size(max = 500, message = "La descripción debe tener un máximo de 500 caracteres.")
     private String description;
-    
-    //RELACIONES
-    // Relación muchos a muchos con Movie a través de MovieGenre
+
+    // RELACIONES
+    // RELACION MUCHOS A MUCHOS CON LA ENTIDAD GENRE A Movie_Genre
     @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Movie_Genre> movieGenres = new HashSet<>(); 
-
-
+    private Set<Movie_Genre> movieGenres = new HashSet<>();
 
     public int getIdGenre() {
         return idGenre;
@@ -61,5 +59,5 @@ public class Genre {
     public String toString() {
         return "Genre{" + "idGenre=" + idGenre + ", name=" + name + ", description=" + description + '}';
     }
-    
+
 }

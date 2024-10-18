@@ -37,14 +37,14 @@ public class Movie {
     @Size(max = 500, message = "La descripción debe tener un máximo de 500 caracteres.")
     private String description;
 
-    //RELACIONES
-    //RELACION CON CATEGORIA 
+    // RELACIONES
+    // RELACION CON CATEGORIA
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    //RELACION CON DIRECTOR 
-    @ManyToOne // Muchas películas pueden pertenecer a un solo director
+    // RELACION CON DIRECTOR
+    @ManyToOne
     @JoinColumn(name = "director_id", nullable = false)
     private Director director;
 
@@ -52,9 +52,9 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Movie_Genre> movieGenres = new HashSet<>();
 
-    //RELACION CON ADMINISTRADOR
+    // RELACION CON ADMINISTRADOR
     @ManyToOne
-    @JoinColumn(name = "idAdministrator", nullable = false) // Clave foránea que referencia a Administrator
+    @JoinColumn(name = "idAdministrator", nullable = false)
     private Administrator administrator;
 
     // RELACION CON Movie_Actor
@@ -65,22 +65,16 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Reward> rewards = new HashSet<>();
 
-    // Ruchos con la entidad Userelación muchos a muchos con la entidad User
-     @ManyToMany
-    @JoinTable(
-        name = "movie_user", // Nombre de la tabla intermedia
-        joinColumns = @JoinColumn(name = "idMovie"), 
-        inverseJoinColumns = @JoinColumn(name = "idUser") 
-    )
+    // RELACION MUCHOS A MUCHOS CON LA ENTIDAD USER
+    @ManyToMany
+    @JoinTable(name = "movie_user", joinColumns = @JoinColumn(name = "idMovie"), inverseJoinColumns = @JoinColumn(name = "idUser"))
     private Set<User> users = new HashSet<>();
-     
-     
-       // Relación muchos a uno con la entidad User
-    @ManyToOne 
-    @JoinColumn(name = "idUser", nullable = false) 
+
+    // RELACION CON USUARIO
+    @ManyToOne
+    @JoinColumn(name = "idUser", nullable = false)
     @JsonProperty("user")
     private User user;
-
 
     public int getIdMovie() {
         return idMovie;
@@ -132,7 +126,8 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" + "idMovie=" + idMovie + ", title=" + title + ", year=" + year + ", description=" + description + ", category=" + category + ", director=" + director + '}';
+        return "Movie{" + "idMovie=" + idMovie + ", title=" + title + ", year=" + year + ", description=" + description
+                + ", category=" + category + ", director=" + director + '}';
     }
 
 }

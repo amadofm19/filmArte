@@ -56,46 +56,54 @@ public class Administrator {
     @Column(name = "password")
     @JsonProperty("password")
     private String password;
-    
-    
-    //RELACIONES
-     // RELACION CON PELICULA
+
+    // RELACIONES
+    // RELACION CON PELICULA
     @OneToMany(mappedBy = "administrator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Movie> movies = new HashSet<>();
 
-    public int getIdAdministrator(){
+    public int getIdAdministrator() {
         return idAdministrator;
     }
-    public void setIdAdministrator(int idAdministrator){
+
+    public void setIdAdministrator(int idAdministrator) {
         this.idAdministrator = idAdministrator;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public void setName(String name){
+
+    public void setName(String name) {
         this.name = name;
     }
-    public String getLastname(){
+
+    public String getLastname() {
         return lastname;
     }
-    public void setLastname(String lastname){
+
+    public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-    public String getEmail(){
+
+    public String getEmail() {
         return email;
     }
-    public void setEmail(String email){
+
+    public void setEmail(String email) {
         this.email = email;
     }
-    public String getPassword(){
+
+    public String getPassword() {
         return password;
     }
-    public void setPassword(String password){
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return idAdministrator + " :: " + name + " :: " + lastname + " :: " + email + " :: " + password;
     }
 }

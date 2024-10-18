@@ -30,7 +30,7 @@ import java.util.Set;
 @Schema(description = "Entity representing an actor in the system.")
 public class Actor {
 
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the actor.", example = "1", required = true)
     @Column(name = "idActor")
@@ -57,11 +57,11 @@ public class Actor {
     @JsonProperty("description")
     private String description;
 
-    
-    //RELACIONES
+    // RELACIONES
     // RELACION CON Movie_Actor
     @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Movie_Actor> movieActors = new HashSet<>();
+
     public int getIdActor() {
         return idActor;
     }
@@ -96,6 +96,7 @@ public class Actor {
 
     @Override
     public String toString() {
-        return "Actor{" + "idActor=" + idActor + ", firstName=" + firstName + ", lastName=" + lastName + ", description=" + description + '}';
+        return "Actor{" + "idActor=" + idActor + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", description=" + description + '}';
     }
 }
