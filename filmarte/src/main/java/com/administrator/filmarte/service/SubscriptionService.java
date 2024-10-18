@@ -30,23 +30,21 @@ public class SubscriptionService {
         return repo.findAll();
     }
 
-    public void save(Subscription actor) {
-        repo.save(actor);
+    public void save(Subscription subscription) {
+        repo.save(subscription);
     }
 
-    public Subscription getById(Integer id) {
-        return repo.findById(id).get();
+    public Subscription getById(Integer idSubscription) {
+        return repo.findById(idSubscription).get();
     }
 
-    public void delete(Integer id) {
-        repo.deleteById(id);
+    public void delete(Integer idSubscription) {
+        repo.deleteById(idSubscription);
     }
 
-    // PAGINATION
     public List<Subscription> getAll(int page, int pageSize) {
         PageRequest pageReq = PageRequest.of(page, pageSize);
         Page<Subscription> subscriptionsPage = repo.findAll(pageReq);
         return subscriptionsPage.getContent();
     }
-
 }

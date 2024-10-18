@@ -30,23 +30,21 @@ public class CategoryService {
         return repo.findAll();
     }
 
-    public void save(Category actor) {
-        repo.save(actor);
+    public void save(Category category) {
+        repo.save(category);
     }
 
-    public Category getById(Integer id) {
-        return repo.findById(id).get();
+    public Category getById(Integer idCategory) {
+        return repo.findById(idCategory).get();
     }
 
-    public void delete(Integer id) {
-        repo.deleteById(id);
+    public void delete(Integer idCategory) {
+        repo.deleteById(idCategory);
     }
 
-    // PAGINATION
     public List<Category> getAll(int page, int pageSize) {
         PageRequest pageReq = PageRequest.of(page, pageSize);
         Page<Category> categoriesPage = repo.findAll(pageReq);
         return categoriesPage.getContent();
     }
-
 }

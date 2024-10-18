@@ -34,12 +34,12 @@ public class ActorService {
         repo.save(actor);
     }
 
-    public Actor getById(Integer id) {
-        return repo.findById(id).get();
+    public Actor getById(Integer idActor) {
+        return repo.findById(idActor).orElse(null);
     }
 
-    public void delete(Integer id) {
-        repo.deleteById(id);
+    public void delete(Integer idActor) {
+        repo.deleteById(idActor);
     }
 
     // PAGINATION
@@ -48,5 +48,4 @@ public class ActorService {
         Page<Actor> actorsPage = repo.findAll(pageReq); 
         return actorsPage.getContent(); 
     }
-
 }

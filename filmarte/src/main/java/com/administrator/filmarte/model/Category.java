@@ -18,16 +18,16 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idCategory;
     private String categoryType;
     private String description;
 
-    public int getId() {
-        return id;
+    public int getIdCategory() {
+        return idCategory;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdCategory(int idCategory) {
+        this.idCategory = idCategory;
     }
 
     public String getCategoryType() {
@@ -48,6 +48,6 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" + "id=" + id + ", categoryType=" + categoryType + ", description=" + description + '}';
+        return "Category{" + "idCategory=" + idCategory + ", categoryType='" + categoryType + '\'' + ", description='" + description + '\'' + '}';
     }
 }

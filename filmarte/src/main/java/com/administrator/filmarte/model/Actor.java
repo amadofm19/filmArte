@@ -20,17 +20,18 @@ public class Actor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idActor;
+
     private String firstName;
     private String lastName;
     private String description;
 
-    public int getId() {
-        return id;
+    public int getIdActor() {
+        return idActor;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdActor(int idActor) {
+        this.idActor = idActor;
     }
 
     public String getFirstName() {
@@ -59,7 +60,6 @@ public class Actor {
 
     @Override
     public String toString() {
-        return "Actor{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", description=" + description + '}';
+        return "Actor{" + "idActor=" + idActor + ", firstName=" + firstName + ", lastName=" + lastName + ", description=" + description + '}';
     }
-
 }

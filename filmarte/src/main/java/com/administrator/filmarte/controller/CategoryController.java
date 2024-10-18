@@ -35,10 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("categories")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
 @Tag(name = "Category", description = "Provides methods for managing categories")
-
 public class CategoryController {
 
     @Autowired
@@ -47,32 +45,28 @@ public class CategoryController {
     @Operation(summary = "Get all categories")
     @ApiResponse(responseCode = "200", description = "Found categories", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Category.class))) })
-
     @GetMapping
     public List<Category> getAll() {
         return service.getAll();
     }
 
-    // PAGINATION
     @Operation(summary = "Get all categories with pagination")
     @GetMapping(value = "/pagination", params = { "page", "size" })
     public List<Category> getAllPaginated(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
-        List<Category> categories = service.getAll(page, pageSize);
-        return categories;
+        return service.getAll(page, pageSize);
     }
 
-    @Operation(summary = "Get a category by his or her ID")
+    @Operation(summary = "Get a category by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category found", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Category not found", content = @Content) })
-
-    @GetMapping("{id}")
-    public ResponseEntity<?> getById(@PathVariable Integer id) {
-        Category category = service.getById(id);
+    @GetMapping("{idCategory}")
+    public ResponseEntity<?> getById(@PathVariable Integer idCategory) {
+        Category category = service.getById(idCategory);
         return new ResponseEntity<Category>(category, HttpStatus.OK);
     }
 
@@ -84,19 +78,18 @@ public class CategoryController {
     }
 
     @Operation(summary = "Update categories")
-    @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody Category category, @PathVariable Integer id) {
-        Category auxCategory = service.getById(id);
-        category.setId(auxCategory.getId());
+    @PutMapping("{idCategory}")
+    public ResponseEntity<?> update(@RequestBody Category category, @PathVariable Integer idCategory) {
+        Category auxCategory = service.getById(idCategory);
+        category.setIdCategory(auxCategory.getIdCategory());
         service.save(category);
         return new ResponseEntity<String>("Updated record", HttpStatus.OK);
     }
 
     @Operation(summary = "Delete category")
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@RequestBody Category category, @PathVariable Integer id) {
-        service.delete(id);
+    @DeleteMapping("{idCategory}")
+    public ResponseEntity<?> delete(@RequestBody Category category, @PathVariable Integer idCategory) {
+        service.delete(idCategory);
         return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
     }
-
 }

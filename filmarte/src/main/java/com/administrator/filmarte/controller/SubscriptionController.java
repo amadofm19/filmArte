@@ -31,10 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("subscriptions")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
 @Tag(name = "Subscription", description = "Provides methods for managing subscriptions")
-
 public class SubscriptionController {
 
     @Autowired
@@ -43,13 +41,11 @@ public class SubscriptionController {
     @Operation(summary = "Get all subscriptions")
     @ApiResponse(responseCode = "200", description = "Found subscriptions", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Subscription.class))) })
-
     @GetMapping
     public List<Subscription> getAll() {
         return service.getAll();
     }
 
-    // PAGINATION
     @Operation(summary = "Get all subscriptions with pagination")
     @GetMapping(value = "/pagination", params = { "page", "size" })
     public List<Subscription> getAllPaginated(
@@ -59,16 +55,15 @@ public class SubscriptionController {
         return subscriptions;
     }
 
-    @Operation(summary = "Get a subscription by his or her ID")
+    @Operation(summary = "Get a subscription by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "subscription found", content = {
+            @ApiResponse(responseCode = "200", description = "Subscription found", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Subscription.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "subscription not found", content = @Content) })
-
-    @GetMapping("{id}")
-    public ResponseEntity<?> getById(@PathVariable Integer id) {
-        Subscription subscription = service.getById(id);
+            @ApiResponse(responseCode = "404", description = "Subscription not found", content = @Content) })
+    @GetMapping("{idSubscription}")
+    public ResponseEntity<?> getById(@PathVariable Integer idSubscription) {
+        Subscription subscription = service.getById(idSubscription);
         return new ResponseEntity<Subscription>(subscription, HttpStatus.OK);
     }
 
@@ -80,19 +75,18 @@ public class SubscriptionController {
     }
 
     @Operation(summary = "Update subscriptions")
-    @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody Subscription subscription, @PathVariable Integer id) {
-        Subscription auxSubscription = service.getById(id);
-        subscription.setId(auxSubscription.getId());
+    @PutMapping("{idSubscription}")
+    public ResponseEntity<?> update(@RequestBody Subscription subscription, @PathVariable Integer idSubscription) {
+        Subscription auxSubscription = service.getById(idSubscription);
+        subscription.setIdSubscription(auxSubscription.getIdSubscription());
         service.save(subscription);
         return new ResponseEntity<String>("Updated record", HttpStatus.OK);
     }
 
     @Operation(summary = "Delete subscription")
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@RequestBody Subscription subscription, @PathVariable Integer id) {
-        service.delete(id);
+    @DeleteMapping("{idSubscription}")
+    public ResponseEntity<?> delete(@RequestBody Subscription subscription, @PathVariable Integer idSubscription) {
+        service.delete(idSubscription);
         return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
     }
-
 }

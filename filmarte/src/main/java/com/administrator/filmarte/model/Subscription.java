@@ -20,7 +20,7 @@ public class Subscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idSubscription;
     private String membershipType;
     private double cost;
     private int duration; // Duration in months
@@ -28,12 +28,12 @@ public class Subscription {
     private Date startDate;
     private Date renewalDate;
 
-    public int getId() {
-        return id;
+    public int getIdSubscription() {
+        return idSubscription;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdSubscription(int idSubscription) {
+        this.idSubscription = idSubscription;
     }
 
     public String getMembershipType() {
@@ -86,8 +86,6 @@ public class Subscription {
 
     @Override
     public String toString() {
-        return "Suscription{" + "id=" + id + ", membershipType=" + membershipType + ", cost=" + cost + ", duration=" + duration + ", paymentMethod=" + paymentMethod + ", startDate=" + startDate + ", renewalDate=" + renewalDate + '}';
+        return "Subscription{" + "idSubscription=" + idSubscription + ", membershipType=" + membershipType + ", cost=" + cost + ", duration=" + duration + ", paymentMethod=" + paymentMethod + ", startDate=" + startDate + ", renewalDate=" + renewalDate + '}';
     }
-    
-    
 }

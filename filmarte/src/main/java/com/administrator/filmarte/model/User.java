@@ -10,7 +10,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idUser;
     private String name;
     private String lastname;
     private String email;
@@ -18,12 +18,12 @@ public class User {
     private String username;
     private String password;
 
-    public int getId() {
-        return id;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     public String getName() {
@@ -74,19 +74,9 @@ public class User {
         this.password = password;
     }
 
-    
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", lastname=" + lastname + ", email=" + email + ", membership=" + membership + ", username=" + username + ", password=" + password + '}';
+        return "User{" + "idUser=" + idUser + ", name=" + name + ", lastname=" + lastname + ", email=" + email + ", membership=" + membership + ", username=" + username + ", password=" + password + '}';
     }
-
-    
-    
-    
-    // Método toString
-//    @Override
-//    public String toString() {
-//        return id + " :: " + name + " :: " + lastname + " :: " + email + " :: " + membership + " :: " + username;
-//    }
-
 }
+

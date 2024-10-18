@@ -35,8 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("actors")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
 @Tag(name = "Actor", description = "Provides methods for managing actors")
 public class ActorController {
 
@@ -46,14 +45,12 @@ public class ActorController {
     @Operation(summary = "Get all actors")
     @ApiResponse(responseCode = "200", description = "Found actors", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Actor.class))) })
-
     @GetMapping
     public List<Actor> getAll() {
         return service.getAll();
     }
 
-    // PAGINATION
- @Operation(summary = "Get actors with pagination")
+    @Operation(summary = "Get actors with pagination")
     @GetMapping(value = "pagination", params = { "page", "size" })
     public List<Actor> getAllPaginated(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
@@ -67,10 +64,9 @@ public class ActorController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Actor.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Actor not found", content = @Content) })
-
-    @GetMapping("{id}")
-    public ResponseEntity<?> getById(@PathVariable Integer id) {
-        Actor actor = service.getById(id);
+    @GetMapping("{idActor}")
+    public ResponseEntity<?> getById(@PathVariable Integer idActor) {
+        Actor actor = service.getById(idActor);
         return new ResponseEntity<Actor>(actor, HttpStatus.OK);
     }
 
@@ -82,19 +78,18 @@ public class ActorController {
     }
 
     @Operation(summary = "Update actors")
-    @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody Actor actor, @PathVariable Integer id) {
-        Actor auxActor = service.getById(id);
-        actor.setId(auxActor.getId());
+    @PutMapping("{idActor}")
+    public ResponseEntity<?> update(@RequestBody Actor actor, @PathVariable Integer idActor) {
+        Actor auxActor = service.getById(idActor);
+        actor.setIdActor(auxActor.getIdActor());
         service.save(actor);
         return new ResponseEntity<String>("Updated record", HttpStatus.OK);
     }
 
     @Operation(summary = "Delete actor")
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@RequestBody Actor actor, @PathVariable Integer id) {
-        service.delete(id);
+    @DeleteMapping("{idActor}")
+    public ResponseEntity<?> delete(@PathVariable Integer idActor) {
+        service.delete(idActor);
         return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
     }
-
 }

@@ -27,15 +27,14 @@ public class UserService {
         repo.save(user);
     }
 
-    public User getById(Integer id) {
-        return repo.findById(id).get();
+    public User getById(Integer idUser) {
+        return repo.findById(idUser).get();
     }
 
-    public void delete(Integer id) {
-        repo.deleteById(id);
+    public void delete(Integer idUser) {
+        repo.deleteById(idUser);
     }
 
-    // PAGINATION
     public List<User> getAll(int page, int pageSize) {
         PageRequest pageReq = PageRequest.of(page, pageSize);
         Page<User> usersPage = repo.findAll(pageReq);

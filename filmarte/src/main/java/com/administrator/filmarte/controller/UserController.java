@@ -28,10 +28,8 @@ import com.administrator.filmarte.service.UserService;
 
 @RestController
 @RequestMapping("users")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
 @Tag(name = "User", description = "Provides methods for managing users")
-
 public class UserController {
 
     @Autowired
@@ -46,7 +44,6 @@ public class UserController {
         return service.getAll();
     }
 
-    // PAGINATION
     @Operation(summary = "Get all users with pagination")
     @GetMapping(value = "/pagination", params = { "page", "size" })
     public List<User> getAllPaginated(
@@ -61,11 +58,11 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User found", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid control number supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Student not found", content = @Content) })
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
 
-    @GetMapping("{id}")
-    public ResponseEntity<?> getById(@PathVariable Integer id) {
-        User user = service.getById(id);
+    @GetMapping("{idUser}")
+    public ResponseEntity<?> getById(@PathVariable Integer idUser) {
+        User user = service.getById(idUser);
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
@@ -77,18 +74,18 @@ public class UserController {
     }
 
     @Operation(summary = "Update users")
-    @PutMapping("{id}")
-    public ResponseEntity<?> update(@RequestBody User user, @PathVariable Integer id) {
-        User auxUser = service.getById(id);
-        user.setId(auxUser.getId());
+    @PutMapping("{idUser}")
+    public ResponseEntity<?> update(@RequestBody User user, @PathVariable Integer idUser) {
+        User auxUser = service.getById(idUser);
+        user.setIdUser(auxUser.getIdUser());
         service.save(user);
         return new ResponseEntity<String>("Updated record", HttpStatus.OK);
     }
 
     @Operation(summary = "Delete user")
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@RequestBody User user, @PathVariable Integer id) {
-        service.delete(id);
+    @DeleteMapping("{idUser}")
+    public ResponseEntity<?> delete(@RequestBody User user, @PathVariable Integer idUser) {
+        service.delete(idUser);
         return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
     }
 }
