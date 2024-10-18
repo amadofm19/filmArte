@@ -11,6 +11,9 @@ import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Schema(description = "Entity representing a comment in the system.")
@@ -41,6 +44,13 @@ public class Comment {
     @Column(name = "type")
     @JsonProperty("type")
     private String type;
+    
+    
+    // RELACION N:1 CON USUARIO
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUser", nullable = false) // Foreign key to the User entity
+    @JsonProperty("user")
+    private User user;
 
     public int getIdComment() {
         return idComment;

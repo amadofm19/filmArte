@@ -20,65 +20,54 @@ import org.springframework.web.bind.annotation.RestController;
 import com.administrator.filmarte.model.Movie;
 import com.administrator.filmarte.service.MovieService;
 
-import io.swagger.v3.oas.annotations.Operation; // Importar la anotación Operation
-import io.swagger.v3.oas.annotations.responses.ApiResponse; // Importar la anotación ApiResponse
-import io.swagger.v3.oas.annotations.media.Content; // Importar la anotación Content
-import io.swagger.v3.oas.annotations.media.Schema; // Importar la anotación Schema
-import io.swagger.v3.oas.annotations.tags.Tag; // Importar la anotación Tag
-import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotación ArraySchema
+import io.swagger.v3.oas.annotations.Operation; 
+import io.swagger.v3.oas.annotations.responses.ApiResponse; 
+import io.swagger.v3.oas.annotations.media.Content; 
+import io.swagger.v3.oas.annotations.media.Schema; 
+import io.swagger.v3.oas.annotations.tags.Tag; 
+import io.swagger.v3.oas.annotations.media.ArraySchema; 
 
 @RestController
 @RequestMapping("/movies")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
-@Tag(name = "Movies", description = "Provides methods for managing movies") // Anotación Tag agregada
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@Tag(name = "Movies", description = "Provides methods for managing movies")
 public class MovieController {
 
     @Autowired
     private MovieService service;
 
-    // Obtener todas las películas
-    @Operation(summary = "Get all movies") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found movies", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Movie.class)))) // Descripción
-                                                                                                                                                                                               // de
-                                                                                                                                                                                               // la
-                                                                                                                                                                                               // respuesta
+    @Operation(summary = "Get all movies")
+    @ApiResponse(responseCode = "200", description = "Found movies", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Movie.class))))
     @GetMapping
     public List<Movie> getAll() {
         return service.getAll();
     }
 
-    // Obtener una película por su ID
-    @Operation(summary = "Get a movie by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found the movie", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Movie.class))) // Descripción
-                                                                                                                                                                            // de
-                                                                                                                                                                            // la
-                                                                                                                                                                            // respuesta
-    @ApiResponse(responseCode = "404", description = "Movie not found") // Descripción del error
-    @GetMapping("{id}")
-    public ResponseEntity<Movie> getById(@PathVariable Integer id) {
-        Movie movie = service.getById(id);
-        return new ResponseEntity<Movie>(movie, HttpStatus.OK);
+    @Operation(summary = "Get a movie by ID")
+    @ApiResponse(responseCode = "200", description = "Found the movie", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Movie.class)))
+    @ApiResponse(responseCode = "404", description = "Movie not found")
+    @GetMapping("{idMovie}")
+    public ResponseEntity<Movie> getById(@PathVariable Integer idMovie) {
+        Movie movie = service.getById(idMovie);
+        return new ResponseEntity<>(movie, HttpStatus.OK);
     }
 
-    // Registrar una nueva película
-    @Operation(summary = "Register a new movie") // Resumen de la operación
-    @ApiResponse(responseCode = "201", description = "Movie registered successfully") // Descripción de la respuesta
+    @Operation(summary = "Register a new movie")
+    @ApiResponse(responseCode = "201", description = "Movie registered successfully")
     @PostMapping
     public ResponseEntity<String> register(@RequestBody Movie movie) {
         service.save(movie);
         return new ResponseEntity<>("Movie registered successfully", HttpStatus.CREATED);
     }
 
-    // Actualizar una película por su ID
-    @Operation(summary = "Update a movie by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Record updated successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @PutMapping("{id}")
-    public ResponseEntity<String> update(@RequestBody Movie movie, @PathVariable Integer id) {
+    @Operation(summary = "Update a movie by ID")
+    @ApiResponse(responseCode = "200", description = "Record updated successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @PutMapping("{idMovie}")
+    public ResponseEntity<String> update(@RequestBody Movie movie, @PathVariable Integer idMovie) {
         try {
-            Movie auxMovie = service.getById(id);
-            movie.setId(auxMovie.getId());
+            Movie auxMovie = service.getById(idMovie);
+            movie.setIdMovie(auxMovie.getIdMovie());
             service.save(movie);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -86,14 +75,13 @@ public class MovieController {
         }
     }
 
-    // Eliminar una película por su ID
-    @Operation(summary = "Delete a movie by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Movie deleted successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
+    @Operation(summary = "Delete a movie by ID")
+    @ApiResponse(responseCode = "200", description = "Movie deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @DeleteMapping("{idMovie}")
+    public ResponseEntity<String> delete(@PathVariable Integer idMovie) {
         try {
-            service.delete(id);
+            service.delete(idMovie);
             return new ResponseEntity<>("Movie deleted successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);

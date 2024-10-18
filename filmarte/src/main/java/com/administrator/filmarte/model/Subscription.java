@@ -6,16 +6,22 @@ package com.administrator.filmarte.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 /**
  *
@@ -68,6 +74,17 @@ public class Subscription {
     @JsonProperty("renewalDate")
     private Date renewalDate;
 
+     // Relación uno a uno con la entidad User
+    @OneToOne // Indica que una suscripción pertenece a un único usuario
+    @JoinColumn(name = "idUser", nullable = false) // Clave foránea que referencia a User
+    @JsonProperty("user")
+    private User user; 
+    
+      // Relación uno a muchos con la entidad Pay
+    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Indica que una suscripción puede tener muchos pagos
+    @JsonProperty("payments")
+    private List<Pay> payments;
+    
     public int getIdSubscription() {
         return idSubscription;
     }

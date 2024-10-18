@@ -12,6 +12,11 @@ import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Schema(description = "Entity representing an administrator in the system.")
@@ -51,6 +56,12 @@ public class Administrator {
     @Column(name = "password")
     @JsonProperty("password")
     private String password;
+    
+    
+    //RELACIONES
+     // RELACION CON PELICULA
+    @OneToMany(mappedBy = "administrator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Movie> movies = new HashSet<>();
 
     public int getIdAdministrator(){
         return idAdministrator;

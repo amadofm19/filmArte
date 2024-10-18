@@ -1,27 +1,41 @@
 package com.administrator.filmarte.model;
 
+
 import jakarta.persistence.Entity;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Director {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idDirector;
     private String firstName;
     private String lastNameFather;
     private String lastNameMother;
+    
+    
+    
+    //RELACIONES
+    // RRELACION CON PELICULA 
+    @OneToMany(mappedBy = "director") 
+    private Set<Movie> movies = new HashSet<>();
 
-    // Getters and Setters
-    public int getId() {
-        return id;
+    
+    
+    
+    public int getIdDirector() {
+        return idDirector;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdDirector(int idDirector) {
+        this.idDirector = idDirector;
     }
 
     public String getFirstName() {
@@ -48,10 +62,15 @@ public class Director {
         this.lastNameMother = lastNameMother;
     }
 
-    // toString method
     @Override
     public String toString() {
-        return id + " :: " + firstName + " :: " + lastNameFather + " :: " + lastNameMother;
+        return "Director{" + "idDirector=" + idDirector + ", firstName=" + firstName + ", lastNameFather=" + lastNameFather + ", lastNameMother=" + lastNameMother + ", movies=" + movies + '}';
     }
+
+   
+
+    
+
+    
 }
 

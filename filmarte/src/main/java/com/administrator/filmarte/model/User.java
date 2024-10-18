@@ -2,14 +2,23 @@ package com.administrator.filmarte.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Schema(description = "Entity representing a user in the system.")
@@ -62,6 +71,29 @@ public class User {
     @Column(name = "password")
     @JsonProperty("password")
     private String password;
+
+    // RELACION N:M CON PELICULA
+    @ManyToMany(mappedBy = "users")
+    private Set<Movie> movies = new HashSet<>();
+
+    // RELACION CON COMENTARIOS
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty("comments")
+    private List<Comment> comments = new ArrayList<>();
+
+    // RELACION CON LISTA DE FAVORITOS
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Indica que un usuario puede tener muchas listas de favoritos
+    @JsonProperty("favoritesLists")
+    private List<FavoritesList> favoritesLists;
+
+    // RELACION CON SUSCRIPCION
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Indica que un usuario tiene una única suscripción
+    @JsonProperty("subscription")
+    private Subscription subscription;
+
+    //RELACION CON HISTORIAL
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<History> histories;
 
     public int getIdUser() {
         return idUser;
@@ -124,4 +156,3 @@ public class User {
         return "User{" + "idUser=" + idUser + ", name=" + name + ", lastname=" + lastname + ", email=" + email + ", membership=" + membership + ", username=" + username + ", password=" + password + '}';
     }
 }
-

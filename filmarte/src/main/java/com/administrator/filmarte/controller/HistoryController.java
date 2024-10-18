@@ -29,56 +29,45 @@ import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotació
 
 @RestController
 @RequestMapping("/histories")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
-@Tag(name = "Histories", description = "Provides methods for managing histories") // Anotación Tag agregada
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@Tag(name = "Histories", description = "Provides methods for managing histories")
 public class HistoryController {
 
     @Autowired
     private HistoryService service;
 
-    // Obtener todas las historias
-    @Operation(summary = "Get all histories") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found histories", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = History.class)))) // Descripción
-                                                                                                                                                                                                    // de
-                                                                                                                                                                                                    // la
-                                                                                                                                                                                                    // respuesta
+    @Operation(summary = "Get all histories")
+    @ApiResponse(responseCode = "200", description = "Found histories", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = History.class))))
     @GetMapping
     public List<History> getAll() {
         return service.getAll();
     }
 
-    // Obtener una historia por su ID
-    @Operation(summary = "Get a history by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found the history", content = @Content(mediaType = "application/json", schema = @Schema(implementation = History.class))) // Descripción
-                                                                                                                                                                                // de
-                                                                                                                                                                                // la
-                                                                                                                                                                                // respuesta
-    @ApiResponse(responseCode = "404", description = "History not found") // Descripción del error
-    @GetMapping("{id}")
-    public ResponseEntity<History> getById(@PathVariable Integer id) {
-        History history = service.getById(id);
-        return new ResponseEntity<History>(history, HttpStatus.OK);
+    @Operation(summary = "Get a history by ID")
+    @ApiResponse(responseCode = "200", description = "Found the history", content = @Content(mediaType = "application/json", schema = @Schema(implementation = History.class)))
+    @ApiResponse(responseCode = "404", description = "History not found")
+    @GetMapping("{idHistory}")
+    public ResponseEntity<History> getById(@PathVariable Integer idHistory) {
+        History history = service.getById(idHistory);
+        return new ResponseEntity<>(history, HttpStatus.OK);
     }
 
-    // Registrar una nueva historia
-    @Operation(summary = "Register a new history") // Resumen de la operación
-    @ApiResponse(responseCode = "201", description = "History registered successfully") // Descripción de la respuesta
+    @Operation(summary = "Register a new history")
+    @ApiResponse(responseCode = "201", description = "History registered successfully")
     @PostMapping
     public ResponseEntity<String> register(@RequestBody History history) {
         service.save(history);
         return new ResponseEntity<>("History registered successfully", HttpStatus.CREATED);
     }
 
-    // Actualizar una historia por su ID
-    @Operation(summary = "Update a history by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Record updated successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @PutMapping("{id}")
-    public ResponseEntity<String> update(@RequestBody History history, @PathVariable Integer id) {
+    @Operation(summary = "Update a history by ID")
+    @ApiResponse(responseCode = "200", description = "Record updated successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @PutMapping("{idHistory}")
+    public ResponseEntity<String> update(@RequestBody History history, @PathVariable Integer idHistory) {
         try {
-            History auxHistory = service.getById(id);
-            history.setId(auxHistory.getId());
+            History auxHistory = service.getById(idHistory);
+            history.setIdHistory(auxHistory.getIdHistory());
             service.save(history);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -86,18 +75,16 @@ public class HistoryController {
         }
     }
 
-    // Eliminar una historia por su ID
-    @Operation(summary = "Delete a history by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "History deleted successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
+    @Operation(summary = "Delete a history by ID")
+    @ApiResponse(responseCode = "200", description = "History deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @DeleteMapping("{idHistory}")
+    public ResponseEntity<String> delete(@PathVariable Integer idHistory) {
         try {
-            service.delete(id);
+            service.delete(idHistory);
             return new ResponseEntity<>("History deleted successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
         }
     }
-
 }

@@ -14,6 +14,8 @@ import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Schema(description = "Entity representing a payment in the system.")
@@ -51,6 +53,14 @@ public class Pay {
     @JsonProperty("paymentMethod")
     private String paymentMethod;
 
+    
+    // Relación muchos a uno con la entidad Subscription
+    @ManyToOne 
+    @JoinColumn(name = "idSubscription", nullable = false) 
+    @JsonProperty("subscription")
+    private Subscription subscription;
+    
+    
     public int getIdPay() {
         return idPay;
     }

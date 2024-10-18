@@ -29,52 +29,45 @@ import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotació
 
 @RestController
 @RequestMapping("/directors")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
-@Tag(name = "Directors", description = "Provides methods for managing directors") // Anotación Tag agregada
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@Tag(name = "Directors", description = "Provides methods for managing directors")
 public class DirectorController {
 
     @Autowired
     private DirectorService service;
 
-    // Obtener todos los directores
-    @Operation(summary = "Get all directors") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found directors", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Director.class)))) // Descripción
-
+    @Operation(summary = "Get all directors")
+    @ApiResponse(responseCode = "200", description = "Found directors", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Director.class))))
     @GetMapping
     public List<Director> getAll() {
         return service.getAll();
     }
 
-    // Obtener un director por su ID
-    @Operation(summary = "Get a director by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found the director", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Director.class))) // Descripción
-
-    @ApiResponse(responseCode = "404", description = "Director not found") // Descripción del error
-    @GetMapping("{id}")
-    public ResponseEntity<Director> getById(@PathVariable Integer id) {
-        Director director = service.getById(id);
+    @Operation(summary = "Get a director by ID")
+    @ApiResponse(responseCode = "200", description = "Found the director", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Director.class)))
+    @ApiResponse(responseCode = "404", description = "Director not found")
+    @GetMapping("{idDirector}")
+    public ResponseEntity<Director> getById(@PathVariable Integer idDirector) {
+        Director director = service.getById(idDirector);
         return new ResponseEntity<>(director, HttpStatus.OK);
     }
 
-    // Registrar un nuevo director
-    @Operation(summary = "Register a new director") // Resumen de la operación
-    @ApiResponse(responseCode = "201", description = "Director registered successfully") // Descripción de la respuesta
+    @Operation(summary = "Register a new director")
+    @ApiResponse(responseCode = "201", description = "Director registered successfully")
     @PostMapping
     public ResponseEntity<String> register(@RequestBody Director director) {
         service.save(director);
         return new ResponseEntity<>("Director registered successfully", HttpStatus.CREATED);
     }
 
-    // Actualizar un director por su ID
-    @Operation(summary = "Update a director by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Record updated successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @PutMapping("{id}")
-    public ResponseEntity<String> update(@RequestBody Director director, @PathVariable Integer id) {
+    @Operation(summary = "Update a director by ID")
+    @ApiResponse(responseCode = "200", description = "Record updated successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @PutMapping("{idDirector}")
+    public ResponseEntity<String> update(@RequestBody Director director, @PathVariable Integer idDirector) {
         try {
-            Director auxDirector = service.getById(id);
-            director.setId(auxDirector.getId());
+            Director auxDirector = service.getById(idDirector);
+            director.setIdDirector(auxDirector.getIdDirector());
             service.save(director);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -82,14 +75,13 @@ public class DirectorController {
         }
     }
 
-    // Eliminar un director por su ID
-    @Operation(summary = "Delete a director by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Director deleted successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
+    @Operation(summary = "Delete a director by ID")
+    @ApiResponse(responseCode = "200", description = "Director deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @DeleteMapping("{idDirector}")
+    public ResponseEntity<String> delete(@PathVariable Integer idDirector) {
         try {
-            service.delete(id);
+            service.delete(idDirector);
             return new ResponseEntity<>("Director deleted successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);

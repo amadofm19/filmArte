@@ -1,19 +1,24 @@
 package com.administrator.filmarte.model;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
 
 @Entity
 public class History {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idHistory;
 
     @NotNull(message = "La fecha de visualización no puede ser nula.")
     @NotBlank(message = "La fecha de visualización no puede estar en blanco.")
@@ -25,14 +30,21 @@ public class History {
     @NotBlank(message = "El género no puede estar en blanco.")
     @Size(max = 100, message = "El género debe tener un máximo de 100 caracteres.")
     private String genre; // Género de la película
+    
+    //RELACION CON USUARIO
+    @ManyToOne
+    @JoinColumn(name = "idUser", nullable = false) 
+    private User user;
 
-    // Getters y Setters
-    public int getId() {
-        return id;
+    
+   
+
+    public int getIdHistory() {
+        return idHistory;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdHistory(int idHistory) {
+        this.idHistory = idHistory;
     }
 
     public String getViewingDate() {
@@ -61,6 +73,7 @@ public class History {
 
     @Override
     public String toString() {
-        return id + " :: " + viewingDate + " :: " + duration + " minutes :: " + genre;
+        return "History{" + "idHistory=" + idHistory + ", viewingDate=" + viewingDate + ", duration=" + duration + ", genre=" + genre + '}';
     }
-}
+
+    }

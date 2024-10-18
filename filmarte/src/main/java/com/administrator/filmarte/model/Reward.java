@@ -14,6 +14,8 @@ import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Schema(description = "Entity representing a reward in the system.")
@@ -44,6 +46,12 @@ public class Reward {
     @Column(name = "nomination")
     @JsonProperty("nomination")
     private String nomination;
+    
+    //RELACIONES
+    // RELACION CON PELICULA
+    @ManyToOne
+    @JoinColumn(name = "idMovie", nullable = false) 
+    private Movie movie;
     
     public int getIdReward() {
         return idReward;

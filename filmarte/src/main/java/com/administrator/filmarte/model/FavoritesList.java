@@ -1,9 +1,12 @@
 package com.administrator.filmarte.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,6 +35,12 @@ public class FavoritesList {
 
     @NotNull(message = "La duración no puede ser nula.")
     private int duration; // Duración en minutos
+    
+     // Relación muchos a uno con la entidad User
+    @ManyToOne // Indica que una lista de favoritos pertenece a un único usuario
+    @JoinColumn(name = "idUser", nullable = false) // Clave foránea que referencia a User
+    @JsonProperty("user")
+    private User user;
 
     // Getters y Setters
     public int getId() {

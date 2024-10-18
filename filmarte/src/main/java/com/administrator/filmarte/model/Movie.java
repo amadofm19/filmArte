@@ -1,19 +1,29 @@
 package com.administrator.filmarte.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idMovie;
 
     @NotNull(message = "El título no puede ser nulo.")
     @NotBlank(message = "El título no puede estar en blanco.")
@@ -27,13 +37,57 @@ public class Movie {
     @Size(max = 500, message = "La descripción debe tener un máximo de 500 caracteres.")
     private String description;
 
-    // Getters and Setters
-    public int getId() {
-        return id;
+    //RELACIONES
+    //RELACION CON CATEGORIA 
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    //RELACION CON DIRECTOR 
+    @ManyToOne // Muchas películas pueden pertenecer a un solo director
+    @JoinColumn(name = "director_id", nullable = false)
+    private Director director;
+
+    // RELACION CON MovieGenre
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Movie_Genre> movieGenres = new HashSet<>();
+
+    //RELACION CON ADMINISTRADOR
+    @ManyToOne
+    @JoinColumn(name = "idAdministrator", nullable = false) // Clave foránea que referencia a Administrator
+    private Administrator administrator;
+
+    // RELACION CON Movie_Actor
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Movie_Actor> movieActors = new HashSet<>();
+
+    // RELACION CON PREMIO (Reward)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Reward> rewards = new HashSet<>();
+
+    // Ruchos con la entidad Userelación muchos a muchos con la entidad User
+     @ManyToMany
+    @JoinTable(
+        name = "movie_user", // Nombre de la tabla intermedia
+        joinColumns = @JoinColumn(name = "idMovie"), 
+        inverseJoinColumns = @JoinColumn(name = "idUser") 
+    )
+    private Set<User> users = new HashSet<>();
+     
+     
+       // Relación muchos a uno con la entidad User
+    @ManyToOne 
+    @JoinColumn(name = "idUser", nullable = false) 
+    @JsonProperty("user")
+    private User user;
+
+
+    public int getIdMovie() {
+        return idMovie;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdMovie(int idMovie) {
+        this.idMovie = idMovie;
     }
 
     public String getTitle() {
@@ -60,9 +114,25 @@ public class Movie {
         this.description = description;
     }
 
-    // toString method
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Director getDirector() {
+        return director;
+    }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
+
     @Override
     public String toString() {
-        return id + " :: " + title + " :: " + year + " :: " + description;
+        return "Movie{" + "idMovie=" + idMovie + ", title=" + title + ", year=" + year + ", description=" + description + ", category=" + category + ", director=" + director + '}';
     }
+
 }

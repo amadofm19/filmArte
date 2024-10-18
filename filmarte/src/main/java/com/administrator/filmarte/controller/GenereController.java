@@ -29,56 +29,45 @@ import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotació
 
 @RestController
 @RequestMapping("/generes")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
-@Tag(name = "Genres", description = "Provides methods for managing movie genres") // Anotación Tag agregada
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@Tag(name = "Genres", description = "Provides methods for managing movie genres")
 public class GenereController {
 
     @Autowired
     private GenereService service;
 
-    // Obtener todos los géneros
-    @Operation(summary = "Get all genres") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found genres", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Genre.class)))) // Descripción
-                                                                                                                                                                                               // de
-                                                                                                                                                                                               // la
-                                                                                                                                                                                               // respuesta
+    @Operation(summary = "Get all genres")
+    @ApiResponse(responseCode = "200", description = "Found genres", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Genre.class))))
     @GetMapping
     public List<Genre> getAll() {
         return service.getAll();
     }
 
-    // Obtener un género por su ID
-    @Operation(summary = "Get a genre by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found the genre", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Genre.class))) // Descripción
-                                                                                                                                                                            // de
-                                                                                                                                                                            // la
-                                                                                                                                                                            // respuesta
-    @ApiResponse(responseCode = "404", description = "Genre not found") // Descripción del error
-    @GetMapping("{id}")
-    public ResponseEntity<Genre> getById(@PathVariable Integer id) {
-        Genre genere = service.getById(id);
-        return new ResponseEntity<Genre>(genere, HttpStatus.OK);
+    @Operation(summary = "Get a genre by ID")
+    @ApiResponse(responseCode = "200", description = "Found the genre", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Genre.class)))
+    @ApiResponse(responseCode = "404", description = "Genre not found")
+    @GetMapping("{idGenre}")
+    public ResponseEntity<Genre> getById(@PathVariable Integer idGenre) {
+        Genre genere = service.getById(idGenre);
+        return new ResponseEntity<>(genere, HttpStatus.OK);
     }
 
-    // Registrar un nuevo género
-    @Operation(summary = "Register a new genre") // Resumen de la operación
-    @ApiResponse(responseCode = "201", description = "Genre registered successfully") // Descripción de la respuesta
+    @Operation(summary = "Register a new genre")
+    @ApiResponse(responseCode = "201", description = "Genre registered successfully")
     @PostMapping
     public ResponseEntity<String> register(@RequestBody Genre genere) {
         service.save(genere);
         return new ResponseEntity<>("Genero registered successfully", HttpStatus.CREATED);
     }
 
-    // Actualizar un género por su ID
-    @Operation(summary = "Update a genre by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Record updated successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @PutMapping("{id}")
-    public ResponseEntity<String> update(@RequestBody Genre genere, @PathVariable Integer id) {
+    @Operation(summary = "Update a genre by ID")
+    @ApiResponse(responseCode = "200", description = "Record updated successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @PutMapping("{idGenre}")
+    public ResponseEntity<String> update(@RequestBody Genre genere, @PathVariable Integer idGenre) {
         try {
-            Genre auxGenere = service.getById(id);
-            genere.setId(auxGenere.getId());
+            Genre auxGenere = service.getById(idGenre);
+            genere.setIdGenre(auxGenere.getIdGenre());
             service.save(genere);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -86,14 +75,13 @@ public class GenereController {
         }
     }
 
-    // Eliminar un género por su ID
-    @Operation(summary = "Delete a genre by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Genre deleted successfully") // Descripción de la respuesta
-    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID") // Descripción del error
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
+    @Operation(summary = "Delete a genre by ID")
+    @ApiResponse(responseCode = "200", description = "Genre deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
+    @DeleteMapping("{idGenre}")
+    public ResponseEntity<String> delete(@PathVariable Integer idGenre) {
         try {
-            service.delete(id);
+            service.delete(idGenre);
             return new ResponseEntity<>("Genero deleted successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
