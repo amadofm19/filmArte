@@ -4,23 +4,44 @@
  */
 package com.administrator.filmarte.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  *
  * @author ARACELI
  */
 @Entity
+@Schema(description = "Entity representing a category in the system.")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier for the category.", example = "1", required = true)
+    @Column(name = "idCategory")
+    @JsonProperty("idCategory")
     private int idCategory;
+
+    @Schema(description = "Type of the category.", example = "Entertainment", required = true)
+    @NotBlank(message = "Category type is mandatory")
+    @Size(min = 1, max = 50, message = "Category type must be between 1 and 50 characters")
+    @Column(name = "categoryType")
+    @JsonProperty("categoryType")
     private String categoryType;
+
+    @Schema(description = "Description of the category.", example = "Includes movies, music, and games.")
+    @Size(max = 255, message = "Description must be at most 255 characters")
+    @Column(name = "description")
+    @JsonProperty("description")
     private String description;
+
 
     public int getIdCategory() {
         return idCategory;
