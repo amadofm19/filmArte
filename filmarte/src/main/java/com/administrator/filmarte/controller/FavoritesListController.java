@@ -40,9 +40,9 @@ public class FavoritesListController {
     // Obtener todas las listas de favoritos
     @Operation(summary = "Get all favorites lists") // Resumen de la operación
     @ApiResponse(responseCode = "200", description = "Found favorites lists", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FavoritesListService.class)))) // Descripción
-                                                                                                                                                                                                                // de
-                                                                                                                                                                                                                // la
-                                                                                                                                                                                                                // respuesta
+    // de
+    // la
+    // respuesta
     @GetMapping
     public List<FavoritesList> getAll() {
         return service.getAll();
@@ -51,9 +51,9 @@ public class FavoritesListController {
     // Obtener una lista de favoritos por su ID
     @Operation(summary = "Get a favorites list by ID") // Resumen de la operación
     @ApiResponse(responseCode = "200", description = "Found the favorites list", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FavoritesListService.class))) // Descripción
-                                                                                                                                                                                             // de
-                                                                                                                                                                                             // la
-                                                                                                                                                                                             // respuesta
+    // de
+    // la
+    // respuesta
     @ApiResponse(responseCode = "404", description = "Favorites list not found") // Descripción del error
     @GetMapping("{id}")
     public ResponseEntity<FavoritesList> getById(@PathVariable Integer id) {
@@ -79,7 +79,7 @@ public class FavoritesListController {
     public ResponseEntity<String> update(@RequestBody FavoritesList favoritesList, @PathVariable Integer id) {
         try {
             FavoritesList auxFavoritesList = service.getById(id);
-            favoritesList.setId(auxFavoritesList.getId());
+            favoritesList.setIdFavoritesList(auxFavoritesList.getIdFavoritesList());
             service.save(favoritesList);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {

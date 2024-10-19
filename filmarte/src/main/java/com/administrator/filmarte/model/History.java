@@ -1,5 +1,9 @@
 package com.administrator.filmarte.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,30 +13,43 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Schema(description = "Entity representing a viewing history in the system.")
 public class History {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Schema(description = "Unique identifier for the history record.", example = "1", required = true)
+    @Column(name = "idHistory")
+    @JsonProperty("idHistory")
+    private int idHistory;
 
+    @Schema(description = "Viewing date of the movie.", example = "2024-10-18", required = true)
     @NotNull(message = "La fecha de visualización no puede ser nula.")
     @NotBlank(message = "La fecha de visualización no puede estar en blanco.")
-    private String viewingDate; // Fecha de visualización
+    @Column(name = "viewingDate")
+    @JsonProperty("viewingDate")
+    private String viewingDate;
 
+    @Schema(description = "Duration of the movie in minutes.", example = "120", required = true)
     @NotNull(message = "La duración no puede ser nula.")
-    private int duration; // Duración en minutos
+    @Column(name = "duration")
+    @JsonProperty("duration")
+    private int duration;
 
+    @Schema(description = "Genre of the movie.", example = "Action", required = true)
     @NotBlank(message = "El género no puede estar en blanco.")
     @Size(max = 100, message = "El género debe tener un máximo de 100 caracteres.")
-    private String genre; // Género de la película
+    @Column(name = "genre")
+    @JsonProperty("genre")
+    private String genre;
 
     // Getters y Setters
-    public int getId() {
-        return id;
+    public int getIdHistory() {
+        return idHistory;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdHistory(int idHistory) {
+        this.idHistory = idHistory;
     }
 
     public String getViewingDate() {
@@ -61,6 +78,6 @@ public class History {
 
     @Override
     public String toString() {
-        return id + " :: " + viewingDate + " :: " + duration + " minutes :: " + genre;
+        return idHistory + " :: " + viewingDate + " :: " + duration + " minutes :: " + genre;
     }
 }

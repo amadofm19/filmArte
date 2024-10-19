@@ -78,7 +78,7 @@ public class MovieController {
     public ResponseEntity<String> update(@RequestBody Movie movie, @PathVariable Integer id) {
         try {
             Movie auxMovie = service.getById(id);
-            movie.setId(auxMovie.getId());
+            movie.setIdMovie(auxMovie.getIdMovie());
             service.save(movie);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {

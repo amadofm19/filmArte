@@ -1,5 +1,9 @@
 package com.administrator.filmarte.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,31 +13,44 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Schema(description = "Entity representing a movie in the system.")
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Schema(description = "Unique identifier for the movie.", example = "1", required = true)
+    @Column(name = "idMovie")
+    @JsonProperty("idMovie")
+    private int idMovie;
 
+    @Schema(description = "Title of the movie.", example = "Inception", required = true)
     @NotNull(message = "El título no puede ser nulo.")
     @NotBlank(message = "El título no puede estar en blanco.")
     @Size(min = 1, max = 100, message = "El título debe tener entre 1 y 100 caracteres.")
+    @Column(name = "title")
+    @JsonProperty("title")
     private String title;
 
+    @Schema(description = "Year the movie was released.", example = "2010", required = true)
     @NotNull(message = "El año no puede ser nulo.")
+    @Column(name = "year")
+    @JsonProperty("year")
     private int year;
 
+    @Schema(description = "Description of the movie.", example = "A mind-bending thriller.", required = false)
     @NotBlank(message = "La descripción no puede estar en blanco.")
     @Size(max = 500, message = "La descripción debe tener un máximo de 500 caracteres.")
+    @Column(name = "description")
+    @JsonProperty("description")
     private String description;
 
     // Getters and Setters
-    public int getId() {
-        return id;
+    public int getIdMovie() {
+        return idMovie;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdMovie(int idMovie) {
+        this.idMovie = idMovie;
     }
 
     public String getTitle() {
@@ -63,6 +80,6 @@ public class Movie {
     // toString method
     @Override
     public String toString() {
-        return id + " :: " + title + " :: " + year + " :: " + description;
+        return idMovie + " :: " + title + " :: " + year + " :: " + description;
     }
 }

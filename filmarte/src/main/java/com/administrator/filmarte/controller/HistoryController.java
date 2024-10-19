@@ -78,7 +78,7 @@ public class HistoryController {
     public ResponseEntity<String> update(@RequestBody History history, @PathVariable Integer id) {
         try {
             History auxHistory = service.getById(id);
-            history.setId(auxHistory.getId());
+            history.setIdHistory(auxHistory.getIdHistory());
             service.save(history);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {

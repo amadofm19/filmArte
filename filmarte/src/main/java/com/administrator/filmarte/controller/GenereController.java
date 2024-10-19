@@ -50,10 +50,8 @@ public class GenereController {
 
     // Obtener un género por su ID
     @Operation(summary = "Get a genre by ID") // Resumen de la operación
-    @ApiResponse(responseCode = "200", description = "Found the genre", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Genre.class))) // Descripción
-                                                                                                                                                                            // de
-                                                                                                                                                                            // la
-                                                                                                                                                                            // respuesta
+    @ApiResponse(responseCode = "200", description = "Found the genre", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Genre.class)))
+
     @ApiResponse(responseCode = "404", description = "Genre not found") // Descripción del error
     @GetMapping("{id}")
     public ResponseEntity<Genre> getById(@PathVariable Integer id) {
@@ -78,7 +76,7 @@ public class GenereController {
     public ResponseEntity<String> update(@RequestBody Genre genere, @PathVariable Integer id) {
         try {
             Genre auxGenere = service.getById(id);
-            genere.setId(auxGenere.getId());
+            genere.setIdGenre(auxGenere.getIdGenre());
             service.save(genere);
             return new ResponseEntity<>("Record updated successfully", HttpStatus.OK);
         } catch (NoSuchElementException e) {
