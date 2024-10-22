@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.ArraySchema; 
 
 @RestController
-@RequestMapping("/movies")
+@RequestMapping("movies")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
 @Tag(name = "Movies", description = "Provides methods for managing movies")
 public class MovieController {

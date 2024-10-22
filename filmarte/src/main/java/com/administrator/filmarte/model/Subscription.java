@@ -4,30 +4,32 @@
  */
 package com.administrator.filmarte.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 
 /**
  *
  * @author ARACELI
  */
 @Entity
+@Table(name = "subscription")
 @Schema(description = "Entity representing a subscription in the system.")
 public class Subscription {
 
@@ -74,16 +76,15 @@ public class Subscription {
     @JsonProperty("renewalDate")
     private Date renewalDate;
 
-    // RELACION CON USUARIO
-    @OneToOne
-    @JoinColumn(name = "idUser", nullable = false)
-    @JsonProperty("user")
-    private User user;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idSubscription")
 
-    // RELACION CON PAGO
-    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonProperty("payments")
-    private List<Pay> payments;
+    //Relation OneToMany with pay
+    @Column(name = "Pay")
+    @JsonProperty("Pay")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "idSubscription", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pay> pays;
 
     public int getIdSubscription() {
         return idSubscription;

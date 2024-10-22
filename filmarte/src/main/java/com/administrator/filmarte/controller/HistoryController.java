@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.administrator.filmarte.model.History;
 import com.administrator.filmarte.service.HistoryService;
 
-import io.swagger.v3.oas.annotations.Operation; // Importar la anotación Operation
-import io.swagger.v3.oas.annotations.responses.ApiResponse; // Importar la anotación ApiResponse
-import io.swagger.v3.oas.annotations.media.Content; // Importar la anotación Content
-import io.swagger.v3.oas.annotations.media.Schema; // Importar la anotación Schema
-import io.swagger.v3.oas.annotations.tags.Tag; // Importar la anotación Tag
-import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotación ArraySchema
+import io.swagger.v3.oas.annotations.Operation; 
+import io.swagger.v3.oas.annotations.responses.ApiResponse; 
+import io.swagger.v3.oas.annotations.media.Content; 
+import io.swagger.v3.oas.annotations.media.Schema; 
+import io.swagger.v3.oas.annotations.tags.Tag; 
+import io.swagger.v3.oas.annotations.media.ArraySchema; 
 
 @RestController
-@RequestMapping("/histories")
+@RequestMapping("histories")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
 @Tag(name = "Histories", description = "Provides methods for managing histories")
 public class HistoryController {

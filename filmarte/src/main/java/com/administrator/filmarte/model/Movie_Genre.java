@@ -8,8 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 /**
@@ -24,14 +22,6 @@ public class Movie_Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; 
     
-    //RELACIONES
-    @ManyToOne
-    @JoinColumn(name = "idMovie", nullable = false) 
-    private Movie movie;
-
-    @ManyToOne
-    @JoinColumn(name = "idGenre", nullable = false) 
-    private Genre genre;
 
   
     public int getId() {
@@ -42,25 +32,11 @@ public class Movie_Genre {
         this.id = id;
     }
 
-    public Movie getMovie() {
-        return movie;
-    }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
-    public Genre getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
 
     @Override
     public String toString() {
-        return "Movie_Genre{" + "id=" + id + ", movie=" + movie + ", genre=" + genre + '}';
+        return "Movie_Genre{" + "id=" + id + ", movie=" + ", genre=" + '}';
     }
     
     

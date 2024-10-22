@@ -1,40 +1,55 @@
 package com.administrator.filmarte.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-
 @Entity
+@Table(name = "historiy")
+@Schema(description = "Entity representing a viewing history record in the system.")
 public class History {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier for the history record.", example = "1", required = true)
+    @Column(name = "idHistoria")
+    @JsonProperty("idHistory")
     private int idHistory;
 
-    @NotNull(message = "La fecha de visualización no puede ser nula.")
-    @NotBlank(message = "La fecha de visualización no puede estar en blanco.")
-    private String viewingDate; // Fecha de visualización
+    @NotNull(message = "The viewing date cannot be null.")
+    @NotBlank(message = "The viewing date cannot be blank.")
+    @Schema(description = "Date when the movie was viewed.", example = "2024-10-21", required = true)
+    @Column(name = "viewingDate")
+    @JsonProperty("viewingDate")
+    private String viewingDate; // Viewing date
 
-    @NotNull(message = "La duración no puede ser nula.")
-    private int duration; // Duración en minutos
+    @NotNull(message = "The duration cannot be null.")
+    @Schema(description = "Duration of the movie in minutes.", example = "120", required = true)
+    @Column(name = "duration")
+    @JsonProperty("duration")
+    private int duration; // Duration in minutes
 
-    @NotBlank(message = "El género no puede estar en blanco.")
-    @Size(max = 100, message = "El género debe tener un máximo de 100 caracteres.")
-    private String genre; // Género de la película
-    
-    //RELACION CON USUARIO
-    @ManyToOne
-    @JoinColumn(name = "idUser", nullable = false) 
-    private User user;
+    @NotBlank(message = "The genre cannot be blank.")
+    @Size(max = 100, message = "The genre must have a maximum of 100 characters.")
+    @Schema(description = "Genre of the movie.", example = "Action", required = true)
+    @Column(name = "genre")
+    @JsonProperty("genre")
+    private String genre; // Movie genre
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idHistory")
 
     public int getIdHistory() {
         return idHistory;
@@ -70,7 +85,11 @@ public class History {
 
     @Override
     public String toString() {
-        return "History{" + "idHistory=" + idHistory + ", viewingDate=" + viewingDate + ", duration=" + duration + ", genre=" + genre + '}';
+        return "History{" +
+                "idHistory=" + idHistory +
+                ", viewingDate='" + viewingDate + '\'' +
+                ", duration=" + duration +
+                ", genre='" + genre + '\'' +
+                '}';
     }
-
-    }
+}

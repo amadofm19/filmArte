@@ -4,20 +4,24 @@ import java.sql.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "pay")
 @Schema(description = "Entity representing a payment in the system.")
 public class Pay {
     @Id
@@ -53,11 +57,11 @@ public class Pay {
     @JsonProperty("paymentMethod")
     private String paymentMethod;
 
-    // ReELACION CON SUSCRIPCION
-    @ManyToOne
-    @JoinColumn(name = "idSubscription", nullable = false)
-    @JsonProperty("subscription")
-    private Subscription subscription;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idSubscription")
+    @JsonProperty("idSubscription")
+    @JsonBackReference
+    private Subscription idSubscription;
 
     public int getIdPay() {
         return idPay;

@@ -1,80 +1,81 @@
 package com.administrator.filmarte.model;
 
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
+@Schema(description = "Entity representing a movie in the system.")
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier for the movie.", example = "1", required = true)
+    @Column(name = "idMovie")
+    @JsonProperty("idMovie")
     private int idMovie;
 
-    @NotNull(message = "El título no puede ser nulo.")
-    @NotBlank(message = "El título no puede estar en blanco.")
-    @Size(min = 1, max = 100, message = "El título debe tener entre 1 y 100 caracteres.")
+    @NotNull(message = "The title cannot be null.")
+    @NotBlank(message = "The title cannot be blank.")
+    @Size(min = 1, max = 100, message = "The title must have between 1 and 100 characters.")
+    @Schema(description = "Title of the movie.", example = "Inception", required = true)
+    @Column(name = "title")
+    @JsonProperty("title")
     private String title;
 
-    @NotNull(message = "El año no puede ser nulo.")
+    @NotNull(message = "The year cannot be null.")
+    @Schema(description = "Year the movie was released.", example = "2010", required = true)
+    @Column(name = "year")
+    @JsonProperty("year")
     private int year;
 
-    @NotBlank(message = "La descripción no puede estar en blanco.")
-    @Size(max = 500, message = "La descripción debe tener un máximo de 500 caracteres.")
+    @NotBlank(message = "The description cannot be blank.")
+    @Size(max = 500, message = "The description must have a maximum of 500 characters.")
+    @Schema(description = "Description of the movie.", example = "A thief who steals corporate secrets through the use of dream-sharing technology.", required = true)
+    @Column(name = "description")
+    @JsonProperty("description")
     private String description;
 
-    // RELACIONES
-    // RELACION CON CATEGORIA
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCategory")
+    @JsonProperty("idCategory")
+    @JsonBackReference
+    private Category idCategory;
 
-    // RELACION CON DIRECTOR
-    @ManyToOne
-    @JoinColumn(name = "director_id", nullable = false)
-    private Director director;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idDirector")
+    @JsonProperty("idDirector")
+    @JsonBackReference
+    private Director idDirector;
 
-    // RELACION CON MovieGenre
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Movie_Genre> movieGenres = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idAdministrator")
+    @JsonProperty("idAdministrator")
+    @JsonBackReference
+    private Administrator idAdministrator;
 
-    // RELACION CON ADMINISTRADOR
-    @ManyToOne
-    @JoinColumn(name = "idAdministrator", nullable = false)
-    private Administrator administrator;
-
-    // RELACION CON Movie_Actor
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Movie_Actor> movieActors = new HashSet<>();
-
-    // RELACION CON PREMIO (Reward)
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Reward> rewards = new HashSet<>();
-
-    // RELACION MUCHOS A MUCHOS CON LA ENTIDAD USER
-    @ManyToMany
-    @JoinTable(name = "movie_user", joinColumns = @JoinColumn(name = "idMovie"), inverseJoinColumns = @JoinColumn(name = "idUser"))
-    private Set<User> users = new HashSet<>();
-
-    // RELACION CON USUARIO
-    @ManyToOne
-    @JoinColumn(name = "idUser", nullable = false)
-    @JsonProperty("user")
-    private User user;
+    //Relation OneToMany whit reward
+    @Column(name = "Reward")
+    @JsonProperty("Reward")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "idMovie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reward> rewards;
 
     public int getIdMovie() {
         return idMovie;
@@ -108,26 +109,14 @@ public class Movie {
         this.description = description;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Director getDirector() {
-        return director;
-    }
-
-    public void setDirector(Director director) {
-        this.director = director;
-    }
 
     @Override
     public String toString() {
-        return "Movie{" + "idMovie=" + idMovie + ", title=" + title + ", year=" + year + ", description=" + description
-                + ", category=" + category + ", director=" + director + '}';
+        return "Movie{" +
+                "idMovie=" + idMovie +
+                ", title='" + title + '\'' +
+                ", year=" + year +
+                ", description='" + description + '\'' +
+                '}';
     }
-
 }

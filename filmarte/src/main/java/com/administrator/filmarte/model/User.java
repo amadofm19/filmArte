@@ -1,26 +1,26 @@
 package com.administrator.filmarte.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
+@Table(name = "user")
 @Schema(description = "Entity representing a user in the system.")
 public class User {
 
@@ -72,28 +72,29 @@ public class User {
     @JsonProperty("password")
     private String password;
 
-    // RELACION N:M CON PELICULA
-    @ManyToMany(mappedBy = "users")
-    private Set<Movie> movies = new HashSet<>();
+    @Column(name = "Comment")
+    @JsonProperty("Comment")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
-    // RELACION CON COMENTARIOS
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonProperty("comments")
-    private List<Comment> comments = new ArrayList<>();
+    //Relation OneToONe With history
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idHistory", referencedColumnName = "idHistory")
+    @JsonProperty("idHistory")
+    private History idHistory;
 
-    // RELACION CON LISTA DE FAVORITOS
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Indica que un usuario puede tener muchas listas de favoritos
-    @JsonProperty("favoritesLists")
-    private List<FavoritesList> favoritesLists;
+    //Relation OneToOne Whit FavoritesList
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idFavoritesList", referencedColumnName = "idFavoritesList")
+    @JsonProperty("idFavoritesList")
+    private FavoritesList idFavoritesList;
 
-    // RELACION CON SUSCRIPCION
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Indica que un usuario tiene una única suscripción
-    @JsonProperty("subscription")
-    private Subscription subscription;
-
-    //RELACION CON HISTORIAL
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<History> histories;
+    //Relation OneToOne with subscription
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idSubscription", referencedColumnName = "idSubscription")
+    @JsonProperty("idSubscription")
+    private Subscription idSubscription;
 
     public int getIdUser() {
         return idUser;

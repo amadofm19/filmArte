@@ -1,36 +1,51 @@
 package com.administrator.filmarte.model;
 
-import jakarta.persistence.CascadeType;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
+@Table(name = "genre")
+@Schema(description = "Entity representing a genre in the system.")
 public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier for the genre.", example = "1", required = true)
+    @Column(name = "idGenre") // Ajustado para que coincida con el SQL
+    @JsonProperty("idGenre")
     private int idGenre;
 
-    @NotBlank(message = "El nombre no puede estar en blanco.")
-    @Size(min = 1, max = 100, message = "El nombre debe tener entre 1 y 100 caracteres.")
+    @Schema(description = "Name of the genre.", example = "Action", required = true)
+    @NotBlank(message = "The name must not be blank.")
+    @Size(min = 1, max = 50, message = "The name must be between 1 and 50 characters.") 
+                                                                                    
+    @Column(name = "name")
+    @JsonProperty("name")
     private String name;
 
-    @Size(max = 500, message = "La descripción debe tener un máximo de 500 caracteres.")
+    @Schema(description = "Description of the genre.", example = "Fast-paced action movies.", required = false)
+    @Size(max = 100, message = "The description must be at most 100 characters.") // Ajustado para que coincida con el
+                                                                                  // SQL
+    @Column(name = "description", nullable = false) // Añadido `nullable = false` para indicar que no puede ser nula
+    @JsonProperty("description")
     private String description;
 
-    // RELACIONES
-    // RELACION MUCHOS A MUCHOS CON LA ENTIDAD GENRE A Movie_Genre
-    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Movie_Genre> movieGenres = new HashSet<>();
+    @ManyToMany(mappedBy = "genres")
+    private Set<Movie> movies;
 
+    // Getters y setters
     public int getIdGenre() {
         return idGenre;
     }
@@ -51,13 +66,24 @@ public class Genre {
         return description;
     }
 
+    public Set<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(Set<Movie> movies) {
+        this.movies = movies;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
 
     @Override
     public String toString() {
-        return "Genre{" + "idGenre=" + idGenre + ", name=" + name + ", description=" + description + '}';
+        return "Genre{" +
+                "idGenre=" + idGenre +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
-
 }

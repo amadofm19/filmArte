@@ -2,20 +2,23 @@ package com.administrator.filmarte.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "comment")
 @Schema(description = "Entity representing a comment in the system.")
 public class Comment {
 
@@ -45,11 +48,12 @@ public class Comment {
     @JsonProperty("type")
     private String type;
 
-    // RELACION CON USUARIO
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUser", nullable = false)
-    @JsonProperty("user")
-    private User user;
+    @JoinColumn(name = "idUser")
+    @JsonProperty("idUser")
+    @JsonBackReference
+    private User idUser;
+
 
     public int getIdComment() {
         return idComment;
