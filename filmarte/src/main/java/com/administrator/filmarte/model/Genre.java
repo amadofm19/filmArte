@@ -1,16 +1,18 @@
 package com.administrator.filmarte.model;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -29,8 +31,8 @@ public class Genre {
 
     @Schema(description = "Name of the genre.", example = "Action", required = true)
     @NotBlank(message = "The name must not be blank.")
-    @Size(min = 1, max = 50, message = "The name must be between 1 and 50 characters.") 
-                                                                                    
+    @Size(min = 1, max = 50, message = "The name must be between 1 and 50 characters.")
+
     @Column(name = "name")
     @JsonProperty("name")
     private String name;
@@ -42,8 +44,11 @@ public class Genre {
     @JsonProperty("description")
     private String description;
 
-    @ManyToMany(mappedBy = "genres")
-    private Set<Movie> movies;
+ 
+
+    // Relación con MovieGenre
+    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MovieGenre> movieGenres = new ArrayList<>();
 
     // Getters y setters
     public int getIdGenre() {
@@ -66,13 +71,7 @@ public class Genre {
         return description;
     }
 
-    public Set<Movie> getMovies() {
-        return movies;
-    }
 
-    public void setMovies(Set<Movie> movies) {
-        this.movies = movies;
-    }
 
     public void setDescription(String description) {
         this.description = description;

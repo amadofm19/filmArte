@@ -1,5 +1,6 @@
 package com.administrator.filmarte.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -76,6 +77,16 @@ public class Movie {
     @JsonManagedReference
     @OneToMany(mappedBy = "idMovie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reward> rewards;
+
+     // Relación con MovieGenre
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MovieGenre> movieGenres = new ArrayList<>();
+
+     // Relación con MovieUser
+     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+     private List<MovieUser> movieUsers = new ArrayList<>();
+
+
 
     public int getIdMovie() {
         return idMovie;

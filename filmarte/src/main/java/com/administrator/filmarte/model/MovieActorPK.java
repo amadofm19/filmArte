@@ -2,7 +2,6 @@ package com.administrator.filmarte.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 public class MovieActorPK implements Serializable {
 
     private int movie;

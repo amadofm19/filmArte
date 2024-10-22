@@ -1,5 +1,6 @@
 package com.administrator.filmarte.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -95,6 +96,10 @@ public class User {
     @JoinColumn(name = "idSubscription", referencedColumnName = "idSubscription")
     @JsonProperty("idSubscription")
     private Subscription idSubscription;
+
+       // Relación con MovieUser
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MovieUser> movieUsers = new ArrayList<>();
 
     public int getIdUser() {
         return idUser;
