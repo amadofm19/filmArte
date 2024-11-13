@@ -23,8 +23,8 @@ public class UserService {
         return repo.findAll();
     }
 
-    public void save(User user) {
-        repo.save(user);
+    public User save(User user) {
+        return repo.save(user);
     }
 
     public User getById(Integer idUser) {
@@ -40,4 +40,13 @@ public class UserService {
         Page<User> usersPage = repo.findAll(pageReq);
         return usersPage.getContent();
     }
+
+    public List<User> findByName(String name) {
+        return repo.findByNameContainingIgnoreCase(name);
+    }
+    
+    public List<User> findByMembership(String membership) {
+        return repo.findByMembership(membership);
+    }
+    
 }

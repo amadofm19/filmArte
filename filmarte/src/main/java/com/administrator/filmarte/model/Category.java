@@ -1,30 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.administrator.filmarte.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 
-/**
- *
- * @author ARACELI
- */
 @Entity
-@Table(name = "category")
 @Schema(description = "Entity representing a category in the system.")
 public class Category {
 
@@ -48,13 +39,23 @@ public class Category {
     @JsonProperty("description")
     private String description;
 
-    //Relation OneToMany Whit movie
-    @Column(name = "Movie")
-    @JsonProperty("Movie")
-    @JsonManagedReference
-    @OneToMany(mappedBy = "idCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category")
+    @JsonIgnore // Evitar que la lista de películas se incluya en la serialización
     private List<Movie> movies;
-    
+    // Getters y Setters
+
+    public Category(String categoryType, String description, int idCategory, List<Movie> movies) {
+        this.categoryType = categoryType;
+        this.description = description;
+        this.idCategory = idCategory;
+        this.movies = movies;
+    }
+
+    public Category() {
+       
+    }
+
+
 
     public int getIdCategory() {
         return idCategory;
@@ -80,8 +81,21 @@ public class Category {
         this.description = description;
     }
 
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
+    }
+
     @Override
     public String toString() {
-        return "Category{" + "idCategory=" + idCategory + ", categoryType='" + categoryType + '\'' + ", description='" + description + '\'' + '}';
+        return "Category{" +
+                "idCategory=" + idCategory +
+                ", categoryType='" + categoryType + '\'' +
+                ", description='" + description + '\'' +
+                ", movies=" + movies +
+                '}';
     }
 }

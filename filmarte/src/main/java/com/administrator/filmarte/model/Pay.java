@@ -2,9 +2,11 @@ package com.administrator.filmarte.model;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,20 +16,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Table;
-
 @Entity
-@Table(name = "pay")
 @Schema(description = "Entity representing a payment in the system.")
 public class Pay {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the payment.", example = "1", required = true)
-    @Column(name = "idPay")
     @JsonProperty("idPay")
     private int idPay;
 
@@ -46,9 +41,9 @@ public class Pay {
 
     @Schema(description = "Date of the payment.", example = "2023-01-01", required = true)
     @NotNull(message = "The payment date must not be null")
-    @Column(name = "paymentDate")
-    @JsonProperty("paymentDate")
-    private Date paymentDate;
+    @Column(name = "paymentDay") // Asegúrate de que se use paymentDay
+    @JsonProperty("paymentDay") // Asegúrate de que el JSON también refleje esto
+    private Date paymentDay; // Cambiado a paymentDay
 
     @Schema(description = "Method of the payment.", example = "Credit Card", required = true)
     @NotBlank(message = "The payment method must not be null and must contain at least one non-whitespace character")
@@ -57,12 +52,27 @@ public class Pay {
     @JsonProperty("paymentMethod")
     private String paymentMethod;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idSubscription")
-    @JsonProperty("idSubscription")
-    @JsonBackReference
-    private Subscription idSubscription;
+    // Relación con la entidad Subscription
+    @ManyToOne
+    @JoinColumn(name = "idSubscription", nullable = false) // Clave foránea
+    @JsonProperty("subscription")
+    private Subscription subscription;
 
+    public Pay(float amount, String currency, int idPay, Date paymentDay, String paymentMethod, Subscription subscription) {
+        this.amount = amount;
+        this.currency = currency;
+        this.idPay = idPay;
+        this.paymentDay = paymentDay;
+        this.paymentMethod = paymentMethod;
+        this.subscription = subscription;
+    }
+
+    public Pay() {
+      
+    }
+    
+
+    
     public int getIdPay() {
         return idPay;
     }
@@ -87,12 +97,12 @@ public class Pay {
         this.currency = currency;
     }
 
-    public Date getPaymentDate() {
-        return paymentDate;
+    public Date getPaymentDay() { // Cambiado a getPaymentDay
+        return paymentDay;
     }
 
-    public void setPaymentDate(Date paymentDate) {
-        this.paymentDate = paymentDate;
+    public void setPaymentDay(Date paymentDay) { // Cambiado a setPaymentDay
+        this.paymentDay = paymentDay;
     }
 
     public String getPaymentMethod() {
@@ -103,8 +113,16 @@ public class Pay {
         this.paymentMethod = paymentMethod;
     }
 
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
     @Override
     public String toString() {
-        return idPay + " :: " + amount + " :: " + currency + " :: " + paymentDate + " :: " + paymentMethod;
+        return idPay + " :: " + amount + " :: " + currency + " :: " + paymentDay + " :: " + paymentMethod;
     }
 }

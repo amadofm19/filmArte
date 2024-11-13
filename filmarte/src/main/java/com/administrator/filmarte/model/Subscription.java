@@ -4,22 +4,19 @@
  */
 package com.administrator.filmarte.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -29,7 +26,6 @@ import jakarta.validation.constraints.Size;
  * @author ARACELI
  */
 @Entity
-@Table(name = "subscription")
 @Schema(description = "Entity representing a subscription in the system.")
 public class Subscription {
 
@@ -76,15 +72,30 @@ public class Subscription {
     @JsonProperty("renewalDate")
     private Date renewalDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idSubscription")
+    // Relación con pagos
+    @OneToMany(mappedBy = "subscription") // Se mapea por el atributo 'subscription' de la clase Pay
+    @JsonIgnore
+    private List<Pay> payments;
+    // Relación muchos a uno con User
 
-    //Relation OneToMany with pay
-    @Column(name = "Pay")
-    @JsonProperty("Pay")
-    @JsonManagedReference
-    @OneToMany(mappedBy = "idSubscription", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Pay> pays;
+    public Subscription(double cost, int duration, int idSubscription, String membershipType, String paymentMethod, List<Pay> payments, Date renewalDate, Date startDate) {
+        this.cost = cost;
+        this.duration = duration;
+        this.idSubscription = idSubscription;
+        this.membershipType = membershipType;
+        this.paymentMethod = paymentMethod;
+        this.payments = payments;
+        this.renewalDate = renewalDate;
+        this.startDate = startDate;
+    }
+
+    public Subscription() {
+    
+    }
+
+
+
+    
 
     public int getIdSubscription() {
         return idSubscription;
@@ -140,6 +151,14 @@ public class Subscription {
 
     public void setRenewalDate(Date renewalDate) {
         this.renewalDate = renewalDate;
+    }
+
+    public List<Pay> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Pay> payments) {
+        this.payments = payments;
     }
 
     @Override

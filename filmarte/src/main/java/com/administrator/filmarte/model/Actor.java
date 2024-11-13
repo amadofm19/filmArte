@@ -4,19 +4,14 @@
  */
 package com.administrator.filmarte.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -57,9 +52,18 @@ public class Actor {
     @JsonProperty("description")
     private String description;
 
-      @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieActor> movieActors = new ArrayList<>();
+    public Actor() {
+    }
 
+    public Actor(String description, String firstName, int idActor, String lastName) {
+        this.description = description;
+        this.firstName = firstName;
+        this.idActor = idActor;
+        this.lastName = lastName;
+    }
+
+    // RELACIONES
+    // RELACION CON Movie_Actor
 
     public int getIdActor() {
         return idActor;
@@ -92,6 +96,11 @@ public class Actor {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    
+
+    
+
 
     @Override
     public String toString() {

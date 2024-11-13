@@ -1,16 +1,14 @@
 package com.administrator.filmarte.model;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,40 +51,61 @@ public class Movie {
     @JsonProperty("description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCategory")
-    @JsonProperty("idCategory")
-    @JsonBackReference
-    private Category idCategory;
+    // Relación con Category
+    @ManyToOne
+    @JoinColumn(name = "idCategory", nullable = false)
+    @JsonProperty("category")
+    private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idDirector")
-    @JsonProperty("idDirector")
-    @JsonBackReference
-    private Director idDirector;
+    // Relación con Genre
+    @ManyToOne
+    @JoinColumn(name = "idGenre", nullable = false)
+    @JsonProperty("genre")
+    private Genre genre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idAdministrator")
-    @JsonProperty("idAdministrator")
-    @JsonBackReference
-    private Administrator idAdministrator;
+    // Relación con Administrator
+    @ManyToOne
+    @JoinColumn(name = "idAdministrator", nullable = false)
+    @JsonProperty("administrator")
+    private Administrator administrator;
 
-    //Relation OneToMany whit reward
-    @Column(name = "Reward")
-    @JsonProperty("Reward")
-    @JsonManagedReference
-    @OneToMany(mappedBy = "idMovie", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Relación con Director
+    @ManyToOne
+    @JoinColumn(name = "idDirector", nullable = false)
+    @JsonProperty("director")
+    private Director director;
+    // RELATION MOVIE
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<History> historys;
+
+    // Relación con Reward
+    @OneToMany(mappedBy = "movie") 
+    @JsonProperty("rewards") 
     private List<Reward> rewards;
 
-     // Relación con MovieGenre
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieGenre> movieGenres = new ArrayList<>();
 
-     // Relación con MovieUser
-     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-     private List<MovieUser> movieUsers = new ArrayList<>();
+    // Getters y Setters
+
+    public Movie(Administrator administrator, Category category, String description, Director director, Genre genre, List<History> historys, int idMovie, List<Reward> rewards, String title, int year) {
+        this.administrator = administrator;
+        this.category = category;
+        this.description = description;
+        this.director = director;
+        this.genre = genre;
+        this.historys = historys;
+        this.idMovie = idMovie;
+        this.rewards = rewards;
+        this.title = title;
+        this.year = year;
+    }
+
+    public Movie() {
+
+    }
 
 
+    
 
     public int getIdMovie() {
         return idMovie;
@@ -120,6 +139,45 @@ public class Movie {
         this.description = description;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public Administrator getAdministrator() {
+        return administrator;
+    }
+
+    public void setAdministrator(Administrator administrator) {
+        this.administrator = administrator;
+    }
+
+    public Director getDirector() {
+        return director;
+    }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
+
+    public List<Reward> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(List<Reward> rewards) {
+        this.rewards = rewards;
+    }
 
     @Override
     public String toString() {
@@ -128,6 +186,16 @@ public class Movie {
                 ", title='" + title + '\'' +
                 ", year=" + year +
                 ", description='" + description + '\'' +
+                ", category=" + category +
+                ", administrator=" + administrator +
                 '}';
+    }
+
+    public List<History> getHistorys() {
+        return historys;
+    }
+
+    public void setHistorys(List<History> historys) {
+        this.historys = historys;
     }
 }

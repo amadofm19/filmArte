@@ -15,21 +15,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.administrator.filmarte.model.Genre;
 import com.administrator.filmarte.service.GenereService;
 
-import io.swagger.v3.oas.annotations.Operation; 
-import io.swagger.v3.oas.annotations.responses.ApiResponse; 
-import io.swagger.v3.oas.annotations.media.Content; 
-import io.swagger.v3.oas.annotations.media.Schema; 
-import io.swagger.v3.oas.annotations.tags.Tag; 
-import io.swagger.v3.oas.annotations.media.ArraySchema; 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("generes")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@RequestMapping("/genres")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
 @Tag(name = "Genres", description = "Provides methods for managing movie genres")
 public class GenereController {
 
@@ -41,6 +43,14 @@ public class GenereController {
     @GetMapping
     public List<Genre> getAll() {
         return service.getAll();
+    }
+
+    @Operation(summary = "Get genres with pagination")
+    @GetMapping(value = "pagination", params = { "page", "size" })
+    public List<Genre> getAllPaginated(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
+        return service.getAll(page, pageSize);
     }
 
     @Operation(summary = "Get a genre by ID")
@@ -57,7 +67,7 @@ public class GenereController {
     @PostMapping
     public ResponseEntity<String> register(@RequestBody Genre genere) {
         service.save(genere);
-        return new ResponseEntity<>("Genero registered successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("Genre registered successfully", HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a genre by ID")
@@ -87,4 +97,5 @@ public class GenereController {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
         }
     }
+
 }

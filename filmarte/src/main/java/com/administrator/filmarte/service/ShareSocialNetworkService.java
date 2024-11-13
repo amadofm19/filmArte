@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -27,9 +29,22 @@ public class ShareSocialNetworkService {
        return repo.findAll();
    }
 
+   public List<ShareSocialNetwork> getAll(int page, int pageSize) {
+       PageRequest pageReq = PageRequest.of(page, pageSize);
+       Page<ShareSocialNetwork> socialNetworksPage = repo.findAll(pageReq);
+       return socialNetworksPage.getContent();
+   }
+
    public List<ShareSocialNetwork> searchByNameNetwork(String nameNetwork) {
        Query query = new Query();
        query.addCriteria(Criteria.where("nameNetwork").regex("^" + nameNetwork));
+       return mongoTemplate.find(query, ShareSocialNetwork.class);
+   }
+
+   public List<ShareSocialNetwork> searchByNameNetwork(String nameNetwork, int page, int pageSize) {
+       Query query = new Query();
+       query.addCriteria(Criteria.where("nameNetwork").regex("^" + nameNetwork));
+       query.with(PageRequest.of(page, pageSize));
        return mongoTemplate.find(query, ShareSocialNetwork.class);
    }
 
@@ -40,7 +55,6 @@ public class ShareSocialNetworkService {
    public void update(ShareSocialNetwork resource, String idNetwork) {
        Optional<ShareSocialNetwork> existingResource = repo.findById(idNetwork);
        if (existingResource.isPresent()) {
-           // Aquí puedes establecer los valores que deseas actualizar.
            ShareSocialNetwork updatedResource = existingResource.get();
            updatedResource.setNameNetwork(resource.getNameNetwork());
            // Agrega otros campos que deseas actualizar aquí
@@ -54,4 +68,9 @@ public class ShareSocialNetworkService {
            repo.deleteById(idNetwork);
        }
    }
+
+    // Método para buscar por URL
+     public List<ShareSocialNetwork> searchByUrl(String url) {
+    return ShareSocialNetworkRepository.findByUrlContainingIgnoreCase(url);
+    }
 }

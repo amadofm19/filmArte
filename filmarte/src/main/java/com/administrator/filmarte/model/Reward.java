@@ -2,9 +2,12 @@ package com.administrator.filmarte.model;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,14 +17,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Table;
-
 @Entity
-@Table(name = "reward")
 @Schema(description = "Entity representing a reward in the system.")
 public class Reward {
     @Id
@@ -50,36 +46,66 @@ public class Reward {
     @Column(name = "nomination")
     @JsonProperty("nomination")
     private String nomination;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idMovie")
-    @JsonProperty("idMovie")
-    @JsonBackReference
-    private Movie idMovie;
-    
+
+    // Relación con Movie
+    @ManyToOne
+    @JoinColumn(name = "idMovie", nullable = false) // Cambia el nombre a idMovie
+    @JsonIgnore // Asegura que se serialice correctamente
+    private Movie movie;
+
+    // Getters y Setters
+
+    public Reward(Date deliveryDate, int idReward, Movie movie, String nameReward, String nomination) {
+        this.deliveryDate = deliveryDate;
+        this.idReward = idReward;
+        this.movie = movie;
+        this.nameReward = nameReward;
+        this.nomination = nomination;
+    }
+
+    public Reward() {
+
+    }
+
+
     public int getIdReward() {
         return idReward;
     }
+
     public void setIdReward(int idReward) {
         this.idReward = idReward;
     }
+
     public String getNameReward() {
         return nameReward;
     }
+
     public void setNameReward(String nameReward) {
         this.nameReward = nameReward;
     }
+
     public Date getDeliveryDate() {
         return deliveryDate;
     }
+
     public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
+
     public String getNomination() {
         return nomination;
     }
+
     public void setNomination(String nomination) {
         this.nomination = nomination;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
     @Override

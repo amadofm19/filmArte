@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.administrator.filmarte.model.History;
@@ -18,23 +20,38 @@ public class HistoryService {
     @Autowired
     private HistoryRepository repo;
 
-    // Obtener todo el historial
     public List<History> getAll() {
         return repo.findAll();
     }
 
-    // Guardar o actualizar una entrada en el historial
     public void save(History history) {
         repo.save(history);
     }
 
-    // Obtener una entrada de historial por su ID
     public History getById(Integer id) {
         return repo.findById(id).orElseThrow(() -> new NoSuchElementException("History record not found"));
     }
 
-    // Eliminar una entrada de historial por su ID
     public void delete(Integer id) {
         repo.deleteById(id);
+    }
+
+
+         public List<History> getAll(int page, int pageSize) {
+        PageRequest pageReq = PageRequest.of(page, pageSize);
+        Page<History> historysPage = repo.findAll(pageReq);
+        return historysPage.getContent();
+    }
+
+    public List<History> findByViewingDate(String viewingDate) {
+        return repo.findByViewingDate(viewingDate);
+    }
+
+    public List<History> findByDuration(int duration) {
+        return repo.findByDuration(duration);
+    }
+
+    public List<History> findByGenre(String genre) {
+        return repo.findByGenreContainingIgnoreCase(genre);
     }
 }

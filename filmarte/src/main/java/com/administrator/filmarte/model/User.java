@@ -1,10 +1,9 @@
 package com.administrator.filmarte.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,22 +14,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "user")
 @Schema(description = "Entity representing a user in the system.")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the user.", example = "1", required = true)
-    @Column(name = "idUser")
-    @JsonProperty("idUser")
-    private int idUser;
+    @Column(name = "idUsers")
+    @JsonProperty("idUsers")
+    private int idUsers;
 
     @Schema(description = "First name of the user.", example = "John", required = true)
     @NotBlank(message = "First name is mandatory")
@@ -73,40 +70,61 @@ public class User {
     @JsonProperty("password")
     private String password;
 
-    @Column(name = "Comment")
-    @JsonProperty("Comment")
-    @JsonManagedReference
-    @OneToMany(mappedBy = "idUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
+    @JoinColumn(name = "idSubscription", referencedColumnName = "idSubscription")
+    @JsonProperty("subscription")
+    private Subscription subscription;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("favoritesList")
+    private List<FavoritesList> favoritesList;
+
+    // @OneToOne
+    // @JoinColumn(name = "idFavoritesList", referencedColumnName =
+    // "idFavoritesList")
+    // @JsonProperty("favoritesList")
+    // private FavoritesList favoritesList;
+
+    @OneToOne
+    @JoinColumn(name = "idHistory", referencedColumnName = "idHistory")
+    @JsonProperty("history")
+    private History history;
+
+    // Relación uno a muchos con Comment
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("comments")
     private List<Comment> comments;
 
-    //Relation OneToONe With history
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idHistory", referencedColumnName = "idHistory")
-    @JsonProperty("idHistory")
-    private History idHistory;
 
-    //Relation OneToOne Whit FavoritesList
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idFavoritesList", referencedColumnName = "idFavoritesList")
-    @JsonProperty("idFavoritesList")
-    private FavoritesList idFavoritesList;
+    // Getters y setters
 
-    //Relation OneToOne with subscription
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idSubscription", referencedColumnName = "idSubscription")
-    @JsonProperty("idSubscription")
-    private Subscription idSubscription;
-
-       // Relación con MovieUser
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieUser> movieUsers = new ArrayList<>();
-
-    public int getIdUser() {
-        return idUser;
+    public User(List<Comment> comments, String email, List<FavoritesList> favoritesList, History history, int idUsers, String lastname, String membership, String name, String password, Subscription subscription, String username) {
+        this.comments = comments;
+        this.email = email;
+        this.favoritesList = favoritesList;
+        this.history = history;
+        this.idUsers = idUsers;
+        this.lastname = lastname;
+        this.membership = membership;
+        this.name = name;
+        this.password = password;
+        this.subscription = subscription;
+        this.username = username;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
+    public User() {
+ 
+    }
+
+
+
+
+    public int getIdUser() {
+        return idUsers;
+    }
+
+    public void setIdUser(int idUsers) {
+        this.idUsers = idUsers;
     }
 
     public String getName() {
@@ -157,8 +175,55 @@ public class User {
         this.password = password;
     }
 
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    /*
+     * public FavoritesList getFavoritesList() {
+     * return (FavoritesList) favoritesList;
+     * }
+     * 
+     * public void setFavoritesList(FavoritesList favoritesList) {
+     * this.favoritesList = favoritesList;
+     * }
+     */
+
+    public History getHistory() {
+        return history;
+    }
+
+    public void setHistory(History history) {
+        this.history = history;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+
     @Override
     public String toString() {
-        return "User{" + "idUser=" + idUser + ", name=" + name + ", lastname=" + lastname + ", email=" + email + ", membership=" + membership + ", username=" + username + ", password=" + password + '}';
+        return "User{" +
+                "idUser=" + idUsers +
+                ", name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", membership='" + membership + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", subscription=" + subscription +
+                ", favoritesList=" + favoritesList +
+                ", history=" + history +
+                ", comments=" + comments +
+                '}';
     }
 }

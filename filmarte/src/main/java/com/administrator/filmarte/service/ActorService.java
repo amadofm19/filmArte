@@ -48,4 +48,17 @@ public class ActorService {
         Page<Actor> actorsPage = repo.findAll(pageReq); 
         return actorsPage.getContent(); 
     }
+
+    public List<Actor> findByFirstName(String firstName) {
+        return repo.findByFirstNameContainingIgnoreCase(firstName);
+    }
+    
+    public List<Actor> findByLastName(String lastName) {
+        return repo.findByLastNameContainingIgnoreCase(lastName);
+    }
+    
+    public List<Actor> findByDescription(String description) {
+        return repo.findByDescriptionContainingIgnoreCase(description);
+    }
+    
 }

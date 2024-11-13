@@ -15,21 +15,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.administrator.filmarte.model.History;
 import com.administrator.filmarte.service.HistoryService;
 
-import io.swagger.v3.oas.annotations.Operation; 
-import io.swagger.v3.oas.annotations.responses.ApiResponse; 
-import io.swagger.v3.oas.annotations.media.Content; 
-import io.swagger.v3.oas.annotations.media.Schema; 
-import io.swagger.v3.oas.annotations.tags.Tag; 
-import io.swagger.v3.oas.annotations.media.ArraySchema; 
+import io.swagger.v3.oas.annotations.Operation; // Importar la anotación Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse; // Importar la anotación ApiResponse
+import io.swagger.v3.oas.annotations.media.Content; // Importar la anotación Content
+import io.swagger.v3.oas.annotations.media.Schema; // Importar la anotación Schema
+import io.swagger.v3.oas.annotations.tags.Tag; // Importar la anotación Tag
+import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotación ArraySchema
 
 @RestController
-@RequestMapping("histories")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@RequestMapping("/histories")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
 @Tag(name = "Histories", description = "Provides methods for managing histories")
 public class HistoryController {
 
@@ -41,6 +43,14 @@ public class HistoryController {
     @GetMapping
     public List<History> getAll() {
         return service.getAll();
+    }
+
+    @Operation(summary = "Get histories with pagination")
+    @GetMapping(value = "pagination", params = { "page", "size" })
+    public List<History> getAllPaginated(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
+        return service.getAll(page, pageSize);
     }
 
     @Operation(summary = "Get a history by ID")
@@ -87,4 +97,35 @@ public class HistoryController {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(summary = "Search histories by viewing date")
+    @GetMapping("/search/date")
+    public ResponseEntity<?> searchByViewingDate(@RequestParam String date) {
+        List<History> histories = service.findByViewingDate(date);
+        if (histories.isEmpty()) {
+            return new ResponseEntity<>("No histories found for the specified viewing date", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(histories, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search histories by duration")
+    @GetMapping("/search/duration")
+    public ResponseEntity<?> searchByDuration(@RequestParam int duration) {
+        List<History> histories = service.findByDuration(duration);
+        if (histories.isEmpty()) {
+            return new ResponseEntity<>("No histories found for the specified duration", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(histories, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search histories by genre")
+    @GetMapping("/search/genre")
+    public ResponseEntity<?> searchByGenre(@RequestParam String genre) {
+        List<History> histories = service.findByGenre(genre);
+        if (histories.isEmpty()) {
+            return new ResponseEntity<>("No histories found for the specified genre", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(histories, HttpStatus.OK);
+    }
+
 }

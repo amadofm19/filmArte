@@ -35,7 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("categories")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
 @Tag(name = "Category", description = "Provides methods for managing categories")
 public class CategoryController {
 
@@ -88,8 +89,28 @@ public class CategoryController {
 
     @Operation(summary = "Delete category")
     @DeleteMapping("{idCategory}")
-    public ResponseEntity<?> delete(@RequestBody Category category, @PathVariable Integer idCategory) {
+    public ResponseEntity<Void> delete(@PathVariable Integer idCategory) {
         service.delete(idCategory);
-        return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
+        return ResponseEntity.noContent().build(); 
+    }
+
+    @Operation(summary = "Get categories by categoryType")
+    @GetMapping("/search/type/{categoryType}")
+    public ResponseEntity<?> getByCategoryType(@PathVariable String categoryType) {
+        List<Category> categories = service.findByCategoryType(categoryType);
+        if (categories.isEmpty()) {
+            return new ResponseEntity<>("No categories found with type: " + categoryType, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get categories by description")
+    @GetMapping("/search/description/{description}")
+    public ResponseEntity<?> getByDescription(@PathVariable String description) {
+        List<Category> categories = service.findByDescription(description);
+        if (categories.isEmpty()) {
+            return new ResponseEntity<>("No categories found containing: " + description, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 }

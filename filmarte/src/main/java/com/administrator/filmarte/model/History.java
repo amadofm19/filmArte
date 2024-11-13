@@ -3,28 +3,25 @@ package com.administrator.filmarte.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "historiy")
 @Schema(description = "Entity representing a viewing history record in the system.")
 public class History {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the history record.", example = "1", required = true)
-    @Column(name = "idHistoria")
+    @Column(name = "idHistory")
     @JsonProperty("idHistory")
     private int idHistory;
 
@@ -48,8 +45,23 @@ public class History {
     @JsonProperty("genre")
     private String genre; // Movie genre
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idHistory")
+    @ManyToOne
+    @JoinColumn(name = "idMovie")
+    private Movie movie;
+
+    public History(int duration, String genre, int idHistory, Movie movie, String viewingDate) {
+        this.duration = duration;
+        this.genre = genre;
+        this.idHistory = idHistory;
+        this.movie = movie;
+        this.viewingDate = viewingDate;
+    }
+
+    public History() {
+ 
+    }
+
+
 
     public int getIdHistory() {
         return idHistory;
@@ -90,6 +102,15 @@ public class History {
                 ", viewingDate='" + viewingDate + '\'' +
                 ", duration=" + duration +
                 ", genre='" + genre + '\'' +
+                ", movie='" + movie + '\'' +
                 '}';
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 }

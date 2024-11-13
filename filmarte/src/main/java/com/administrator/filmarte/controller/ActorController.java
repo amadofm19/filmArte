@@ -11,12 +11,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+
+import org.modelmapper.ModelMapper;
+import com.administrator.filmarte.dto.ActorDTO;
 import com.administrator.filmarte.model.Actor;
 import com.administrator.filmarte.service.ActorService;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,20 +42,26 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ARACELI
  */
 @RestController
+@Validated
 @RequestMapping("actors")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
 @Tag(name = "Actor", description = "Provides methods for managing actors")
 public class ActorController {
 
     @Autowired
     private ActorService service;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
     @Operation(summary = "Get all actors")
     @ApiResponse(responseCode = "200", description = "Found actors", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Actor.class))) })
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ActorDTO.class))) })
     @GetMapping
-    public List<Actor> getAll() {
-        return service.getAll();
+    public List<ActorDTO> getAll() {
+        List<Actor> actors = service.getAll();
+        return actors.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Operation(summary = "Get actors with pagination")
@@ -55,9 +69,9 @@ public class ActorController {
     public List<Actor> getAllPaginated(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
-        return service.getAll(page, pageSize);  
+        return service.getAll(page, pageSize);
     }
-    
+
     @Operation(summary = "Get an actor by his or her ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Actor found", content = {
@@ -65,16 +79,15 @@ public class ActorController {
             @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Actor not found", content = @Content) })
     @GetMapping("{idActor}")
-    public ResponseEntity<?> getById(@PathVariable Integer idActor) {
-        Actor actor = service.getById(idActor);
-        return new ResponseEntity<Actor>(actor, HttpStatus.OK);
+    public ResponseEntity<ActorDTO> getById(@PathVariable @Min(1) Integer idActor) {
+        return new ResponseEntity<ActorDTO>(convertToDTO(service, getById(idActor), HttpStatus.OK));
     }
 
     @Operation(summary = "Register an actor")
     @PostMapping
-    public ResponseEntity<?> registrar(@RequestBody Actor actor) {
-        service.save(actor);
-        return new ResponseEntity<String>("Saved record", HttpStatus.OK);
+    public ResponseEntity<ActorDTO> add(@Valid @RequestBody ActorDTO actorDTO) {
+        ActorDTO savedActor = convertToDTO(service.save(convertToEntity(actorDTO)));
+        return new ResponseEntity<>(savedActor, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update actors")
@@ -92,4 +105,54 @@ public class ActorController {
         service.delete(idActor);
         return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
     }
+
+    @Operation(summary = "Search actors by first name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found actors", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Actor.class))) }),
+            @ApiResponse(responseCode = "404", description = "No actors found", content = @Content) })
+    @GetMapping("/search/firstName")
+    public ResponseEntity<?> searchByFirstName(@RequestParam String firstName) {
+        List<Actor> actors = service.findByFirstName(firstName);
+        if (actors.isEmpty()) {
+            return new ResponseEntity<>("No actors found with the provided first name", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search actors by last name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found actors", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Actor.class))) }),
+            @ApiResponse(responseCode = "404", description = "No actors found", content = @Content) })
+    @GetMapping("/search/lastName")
+    public ResponseEntity<?> searchByLastName(@RequestParam String lastName) {
+        List<Actor> actors = service.findByLastName(lastName);
+        if (actors.isEmpty()) {
+            return new ResponseEntity<>("No actors found with the provided last name", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search actors by description")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found actors", content = {
+                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Actor.class))) }),
+            @ApiResponse(responseCode = "404", description = "No actors found", content = @Content) })
+    @GetMapping("/search/description")
+    public ResponseEntity<?> searchByDescription(@RequestParam String description) {
+        List<Actor> actors = service.findByDescription(description);
+        if (actors.isEmpty()) {
+            return new ResponseEntity<>("No actors found with the provided description", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    private ActorDTO convertToDTO(Actor actor) {
+        return modelMapper.map(actor, ActorDTO.class);
+    }
+
+    public Actor convertToEntity(ActorDTO actorDTO) {
+		return modelMapper.map(actorDTO, Actor.class);
+	}
 }

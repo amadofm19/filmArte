@@ -2,6 +2,7 @@ package com.administrator.filmarte.controller;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,73 +31,112 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("administrators")
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+                RequestMethod.PUT })
 @Tag(name = "Administrator", description = "Provides methods for managing administrators")
 public class AdministratorController {
-    
-    @Autowired
-    private AdministratorService service;
 
-    @Operation(summary = "Get all administrators")
-    @ApiResponse(responseCode = "200", description = "Found Administrators", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Administrator.class)))})
+        @Autowired
+        private AdministratorService service;
 
-    @GetMapping
-    public List<Administrator> getAll () {
-        return service.getAll();
-    }
+        @Operation(summary = "Get all administrators")
+        @ApiResponse(responseCode = "200", description = "Found Administrators", content = {
+                        @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Administrator.class))) })
 
-    @Operation(summary = "Get all administrators with pagination")
-    @GetMapping(value = "pagination", params = {"page", "pageSize"})
-    public List<Administrator> getAllPaginated(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
-            List<Administrator> administrators = service.getAll(page, pageSize);
-            return administrators;
-    }
-
-    @Operation(summary = "Get an administrator by their id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Administrator found", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Administrator.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Administrator not found", content = @Content)})
-    @GetMapping("{idAdministrator}")
-    public ResponseEntity<Administrator> getByIdAdministrator(@PathVariable Integer idAdministrator){
-        Administrator administrator = service.getByIAdministrator(idAdministrator);
-        return new ResponseEntity<>(administrator, HttpStatus.OK);
-    }
-
-    @Operation(summary = "Register a new administrator")
-    @ApiResponse(responseCode = "201", description = "Administrator registered successfully", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Administrator.class))})
-    @PostMapping
-    public void registrar(@RequestBody Administrator administrator){
-        service.save(administrator);
-    }
-
-    @Operation(summary = "Update an existing administrator")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Updated record", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Administrator.class))}),
-            @ApiResponse(responseCode = "404", description = "Administrator not found", content = @Content)})
-    @PutMapping("{idAdministrator}")
-    public ResponseEntity<?> update(@RequestBody Administrator administrator, @PathVariable Integer idAdministrator){
-        try{
-            Administrator auxAdministrator = service.getByIAdministrator(idAdministrator);
-            administrator.setIdAdministrator(auxAdministrator.getIdAdministrator());
-            service.save(administrator);
-            return new ResponseEntity<>("Updated record", HttpStatus.OK);
-        }catch (NoSuchElementException e) {
-            return new ResponseEntity<>("The record with the id administrator provided is not found in the database", HttpStatus.NOT_FOUND);
+        @GetMapping
+        public List<Administrator> getAll() {
+                return service.getAll();
         }
-    }
 
-    @Operation(summary = "Delete an administrator by their id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Administrator deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Administrator not found", content = @Content)})
-    @DeleteMapping("{idAdministrator}")
-    public void delete(@PathVariable Integer idAdministrator) {
-        service.delete(idAdministrator); 
-    }
+        @Operation(summary = "Get all administrators with pagination")
+        @GetMapping(value = "pagination", params = { "page", "pageSize" })
+        public List<Administrator> getAllPaginated(
+                        @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+                List<Administrator> administrators = service.getAll(page, pageSize);
+                return administrators;
+        }
+
+        @Operation(summary = "Get an administrator by their id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Administrator found", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Administrator.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+                        @ApiResponse(responseCode = "404", description = "Administrator not found", content = @Content) })
+        @GetMapping("{idAdministrator}")
+        public ResponseEntity<Administrator> getByIdAdministrator(@PathVariable Integer idAdministrator) {
+                Administrator administrator = service.getByIAdministrator(idAdministrator);
+                return new ResponseEntity<>(administrator, HttpStatus.OK);
+        }
+
+        @Operation(summary = "Register a new administrator")
+        @ApiResponse(responseCode = "201", description = "Administrator registered successfully", content = {
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = Administrator.class)) })
+        @PostMapping
+        public void registrar(@RequestBody Administrator administrator) {
+                service.save(administrator);
+        }
+
+        @Operation(summary = "Update an existing administrator")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Updated record", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = Administrator.class)) }),
+                        @ApiResponse(responseCode = "404", description = "Administrator not found", content = @Content) })
+        @PutMapping("{idAdministrator}")
+        public ResponseEntity<?> update(@RequestBody Administrator administrator,
+                        @PathVariable Integer idAdministrator) {
+                try {
+                        Administrator auxAdministrator = service.getByIAdministrator(idAdministrator);
+                        administrator.setIdAdministrator(auxAdministrator.getIdAdministrator());
+                        service.save(administrator);
+                        return new ResponseEntity<>("Updated record", HttpStatus.OK);
+                } catch (NoSuchElementException e) {
+                        return new ResponseEntity<>(
+                                        "The record with the id administrator provided is not found in the database",
+                                        HttpStatus.NOT_FOUND);
+                }
+        }
+
+        @Operation(summary = "Delete an administrator by their id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "204", description = "Administrator deleted successfully"),
+                        @ApiResponse(responseCode = "404", description = "Administrator not found", content = @Content) })
+        @DeleteMapping("{idAdministrator}")
+        public ResponseEntity<Void> delete(@PathVariable Integer idAdministrator) {
+                service.delete(idAdministrator);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        @Operation(summary = "Get administrators by name")
+        @GetMapping("/search/name/{name}")
+        public ResponseEntity<?> getByName(@PathVariable String name) {
+                List<Administrator> administrators = service.findByName(name);
+                if (administrators.isEmpty()) {
+                        return new ResponseEntity<>("No administrators found with name: " + name, HttpStatus.NOT_FOUND);
+                }
+                return new ResponseEntity<>(administrators, HttpStatus.OK);
+        }
+
+        @Operation(summary = "Get administrators by lastname")
+        @GetMapping("/search/lastname/{lastname}")
+        public ResponseEntity<?> getByLastname(@PathVariable String lastname) {
+                List<Administrator> administrators = service.findByLastname(lastname);
+                if (administrators.isEmpty()) {
+                        return new ResponseEntity<>("No administrators found with lastname: " + lastname,
+                                        HttpStatus.NOT_FOUND);
+                }
+                return new ResponseEntity<>(administrators, HttpStatus.OK);
+        }
+
+        @Operation(summary = "Get administrators by password")
+        @GetMapping("/search/password/{password}")
+        public ResponseEntity<?> getByPassword(@PathVariable String password) {
+                List<Administrator> administrators = service.findByPassword(password);
+                if (administrators.isEmpty()) {
+                        return new ResponseEntity<>("No administrators found with password: " + password,
+                                        HttpStatus.NOT_FOUND);
+                }
+                return new ResponseEntity<>(administrators, HttpStatus.OK);
+        }
+
 }

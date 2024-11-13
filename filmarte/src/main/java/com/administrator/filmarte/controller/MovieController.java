@@ -15,21 +15,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.administrator.filmarte.model.Movie;
 import com.administrator.filmarte.service.MovieService;
 
-import io.swagger.v3.oas.annotations.Operation; 
-import io.swagger.v3.oas.annotations.responses.ApiResponse; 
-import io.swagger.v3.oas.annotations.media.Content; 
-import io.swagger.v3.oas.annotations.media.Schema; 
-import io.swagger.v3.oas.annotations.tags.Tag; 
-import io.swagger.v3.oas.annotations.media.ArraySchema; 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("movies")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@RequestMapping("/movies")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
 @Tag(name = "Movies", description = "Provides methods for managing movies")
 public class MovieController {
 
@@ -41,6 +43,16 @@ public class MovieController {
     @GetMapping
     public List<Movie> getAll() {
         return service.getAll();
+    }
+
+    // AGREGADO
+    @Operation(summary = "Get all movies with pagination")
+    @GetMapping(value = "/pagination", params = { "page", "size" })
+    public List<Movie> getAllPaginated(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
+        List<Movie> movies = service.getAll(page, pageSize);
+        return movies;
     }
 
     @Operation(summary = "Get a movie by ID")
@@ -87,4 +99,38 @@ public class MovieController {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(summary = "Get movies by title")
+    @GetMapping("/search/title")
+    public ResponseEntity<?> searchByTitle(@RequestParam String title) {
+        List<Movie> movies = service.findByTitle(title);
+        if (movies.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontraron películas con el título: " + title);
+        }
+        return ResponseEntity.ok(movies);
+    }
+
+    @Operation(summary = "Get movies by year")
+@GetMapping("/search/year")
+public ResponseEntity<?> searchByYear(@RequestParam int year) {
+    List<Movie> movies = service.findByYear(year);
+    if (movies.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No movies found for the year: " + year);
+    }
+    return ResponseEntity.ok(movies);
+}
+
+@Operation(summary = "Get movies by title and year")
+@GetMapping("/search/title-year")
+public ResponseEntity<?> searchByTitleAndYear(@RequestParam String title, @RequestParam int year) {
+    List<Movie> movies = service.findByTitleAndYear(title, year);
+    if (movies.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No movies found with the title: " + title + " and the year: " + year);
+    }
+    return ResponseEntity.ok(movies);
+}
+
 }

@@ -101,4 +101,34 @@ public class CommentController {
     public void delete(@PathVariable Integer idComment) {
         service.delete(idComment); 
     }
+
+    @Operation(summary = "Get comments by author")
+    @GetMapping("/search/author/{author}")
+    public ResponseEntity<?> getByAuthor(@PathVariable String author) {
+        List<Comment> comments = service.findByAuthor(author);
+        if (comments.isEmpty()) {
+            return new ResponseEntity<>("No comments found for author: " + author, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get comments by type")
+    @GetMapping("/search/type/{type}")
+    public ResponseEntity<?> getByType(@PathVariable String type) {
+        List<Comment> comments = service.findByType(type);
+        if (comments.isEmpty()) {
+            return new ResponseEntity<>("No comments found of type: " + type, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get comments by content")
+    @GetMapping("/search/content/{content}")
+    public ResponseEntity<?> getByContent(@PathVariable String content) {
+        List<Comment> comments = service.findByContent(content);
+        if (comments.isEmpty()) {
+            return new ResponseEntity<>("No comments found containing: " + content, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
 }

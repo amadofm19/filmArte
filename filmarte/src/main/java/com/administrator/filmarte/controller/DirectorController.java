@@ -15,21 +15,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.administrator.filmarte.model.Director;
 import com.administrator.filmarte.service.DirectorService;
 
-import io.swagger.v3.oas.annotations.Operation; 
-import io.swagger.v3.oas.annotations.responses.ApiResponse; 
-import io.swagger.v3.oas.annotations.media.Content; 
-import io.swagger.v3.oas.annotations.media.Schema; 
-import io.swagger.v3.oas.annotations.tags.Tag; 
-import io.swagger.v3.oas.annotations.media.ArraySchema; 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotación Operation
+import io.swagger.v3.oas.annotations.media.Content; // Importar la anotación ApiResponse
+import io.swagger.v3.oas.annotations.media.Schema; // Importar la anotación Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse; // Importar la anotación Schema
+import io.swagger.v3.oas.annotations.tags.Tag; // Importar la anotación Tag
 
 @RestController
-@RequestMapping("directors")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@RequestMapping("/directors")
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
 @Tag(name = "Directors", description = "Provides methods for managing directors")
 public class DirectorController {
 
@@ -41,6 +43,14 @@ public class DirectorController {
     @GetMapping
     public List<Director> getAll() {
         return service.getAll();
+    }
+
+    @Operation(summary = "Get directors with pagination")
+    @GetMapping(value = "pagination", params = { "page", "size" })
+    public List<Director> getAllPaginated(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
+        return service.getAll(page, pageSize);
     }
 
     @Operation(summary = "Get a director by ID")
@@ -86,5 +96,35 @@ public class DirectorController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @Operation(summary = "Get directors by first name")
+    @GetMapping("/search/firstName/{firstName}")
+    public ResponseEntity<List<Director>> getByFirstName(@PathVariable String firstName) {
+        List<Director> directors = service.findByFirstName(firstName);
+        if (directors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(directors, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get directors by father's last name")
+    @GetMapping("/search/lastNameFather/{lastNameFather}")
+    public ResponseEntity<List<Director>> getByLastNameFather(@PathVariable String lastNameFather) {
+        List<Director> directors = service.findByLastNameFather(lastNameFather);
+        if (directors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(directors, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get directors by mother's last name")
+    @GetMapping("/search/lastNameMother/{lastNameMother}")
+    public ResponseEntity<List<Director>> getByLastNameMother(@PathVariable String lastNameMother) {
+        List<Director> directors = service.findByLastNameMother(lastNameMother);
+        if (directors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(directors, HttpStatus.OK);
     }
 }

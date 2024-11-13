@@ -2,31 +2,28 @@ package com.administrator.filmarte.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "administrator")
 @Schema(description = "Entity representing an administrator in the system.")
 public class Administrator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the administrator.", example = "1", required = true)
-    @Column(name = "idAdministrador")
+    @Column(name = "idAdministrator")
     @JsonProperty("idAdministrator")
     private int idAdministrator;
 
@@ -58,12 +55,29 @@ public class Administrator {
     @JsonProperty("password")
     private String password;
 
-    //Relation OneToMany with movie 
-    @Column(name = "Movie")
-    @JsonProperty("Movie")
-    @JsonManagedReference
-    @OneToMany(mappedBy = "idAdministrator", cascade = CascadeType.ALL, orphanRemoval = true)
+    // RELACIONES
+    // RELACION CON PELICULA
+    @OneToMany(mappedBy = "administrator") // Se refiere al atributo 'administrator' en Movie
+    @JsonIgnore
     private List<Movie> movies;
+
+
+    
+    public Administrator(int idAdministrator, String name, String lastname, String email, String password, List<Movie> movies) {
+        this.idAdministrator = idAdministrator;
+        this.name = name;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+        this.movies = movies;
+    }
+
+    public Administrator() {
+    }
+
+
+
+
 
     public int getIdAdministrator() {
         return idAdministrator;
@@ -103,6 +117,14 @@ public class Administrator {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
     @Override

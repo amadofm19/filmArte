@@ -47,4 +47,12 @@ public class CategoryService {
         Page<Category> categoriesPage = repo.findAll(pageReq);
         return categoriesPage.getContent();
     }
+
+    public List<Category> findByCategoryType(String categoryType) {
+        return repo.findByCategoryType(categoryType);
+    }
+
+    public List<Category> findByDescription(String description) {
+        return repo.findByDescriptionContaining(description);
+    }
 }

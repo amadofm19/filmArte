@@ -1,19 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.administrator.filmarte.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import com.administrator.filmarte.model.Subscription;
-import com.administrator.filmarte.service.SubscriptionService;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +18,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.administrator.filmarte.model.Subscription;
+import com.administrator.filmarte.service.SubscriptionService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("subscriptions")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
+        RequestMethod.PUT })
 @Tag(name = "Subscription", description = "Provides methods for managing subscriptions")
 public class SubscriptionController {
 
@@ -62,31 +63,90 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
             @ApiResponse(responseCode = "404", description = "Subscription not found", content = @Content) })
     @GetMapping("{idSubscription}")
-    public ResponseEntity<?> getById(@PathVariable Integer idSubscription) {
+    public ResponseEntity<Subscription> getById(@PathVariable Integer idSubscription) {
         Subscription subscription = service.getById(idSubscription);
-        return new ResponseEntity<Subscription>(subscription, HttpStatus.OK);
+        return new ResponseEntity<>(subscription, HttpStatus.OK);
     }
 
     @Operation(summary = "Register a subscription")
+    @ApiResponse(responseCode = "201", description = "Subscription registered successfully", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Subscription.class)) })
     @PostMapping
-    public ResponseEntity<?> registrar(@RequestBody Subscription subscription) {
+    public ResponseEntity<String> registrar(@RequestBody Subscription subscription) {
         service.save(subscription);
-        return new ResponseEntity<String>("Saved record", HttpStatus.OK);
+        return new ResponseEntity<>("Saved record", HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Update subscriptions")
+    @Operation(summary = "Update a subscription")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Updated record", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Subscription.class)) }),
+            @ApiResponse(responseCode = "404", description = "Subscription not found", content = @Content) })
     @PutMapping("{idSubscription}")
-    public ResponseEntity<?> update(@RequestBody Subscription subscription, @PathVariable Integer idSubscription) {
-        Subscription auxSubscription = service.getById(idSubscription);
-        subscription.setIdSubscription(auxSubscription.getIdSubscription());
-        service.save(subscription);
-        return new ResponseEntity<String>("Updated record", HttpStatus.OK);
+    public ResponseEntity<String> update(@RequestBody Subscription subscription, @PathVariable Integer idSubscription) {
+        try {
+            Subscription auxSubscription = service.getById(idSubscription);
+            subscription.setIdSubscription(auxSubscription.getIdSubscription());
+            service.save(subscription);
+            return new ResponseEntity<>("Updated record", HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
+        }
     }
 
-    @Operation(summary = "Delete subscription")
+    @Operation(summary = "Delete a subscription by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Subscription deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Record not found with the provided ID", content = @Content) })
     @DeleteMapping("{idSubscription}")
-    public ResponseEntity<?> delete(@RequestBody Subscription subscription, @PathVariable Integer idSubscription) {
-        service.delete(idSubscription);
-        return new ResponseEntity<String>("Deleted record", HttpStatus.OK);
+    public ResponseEntity<String> delete(@PathVariable Integer idSubscription) {
+        try {
+            service.delete(idSubscription);
+            return new ResponseEntity<>("Deleted record", HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Record not found with the provided ID", HttpStatus.NOT_FOUND);
+        }
     }
+
+    @Operation(summary = "Get subscriptions by membership type")
+    @GetMapping("search/membershipType")
+    public ResponseEntity<?> getByMembershipType(@RequestParam("membershipType") String membershipType) {
+        List<Subscription> subscriptions = service.findByMembershipType(membershipType);
+        if (subscriptions.isEmpty()) {
+            return new ResponseEntity<>("No subscriptions found with the membership type: " + membershipType, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(subscriptions, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get subscriptions by cost")
+    @GetMapping("search/cost")
+    public ResponseEntity<?> getByCost(@RequestParam("cost") double cost) {
+        List<Subscription> subscriptions = service.findByCost(cost);
+        if (subscriptions.isEmpty()) {
+            return new ResponseEntity<>("No subscriptions found with the cost: " + cost, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(subscriptions, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get subscriptions by duration")
+    @GetMapping("search/duration")
+    public ResponseEntity<?> getByDuration(@RequestParam("duration") int duration) {
+        List<Subscription> subscriptions = service.findByDuration(duration);
+        if (subscriptions.isEmpty()) {
+            return new ResponseEntity<>("No subscriptions found with the duration: " + duration, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(subscriptions, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get subscriptions by payment method")
+    @GetMapping("search/paymentMethod")
+    public ResponseEntity<?> getByPaymentMethod(@RequestParam("paymentMethod") String paymentMethod) {
+        List<Subscription> subscriptions = service.findByPaymentMethod(paymentMethod);
+        if (subscriptions.isEmpty()) {
+            return new ResponseEntity<>("No subscriptions found with the payment method: " + paymentMethod, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(subscriptions, HttpStatus.OK);
+    }
+
+    
 }

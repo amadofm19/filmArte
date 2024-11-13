@@ -2,23 +2,19 @@ package com.administrator.filmarte.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "director")
 @Schema(description = "Entity representing a director in the system.")
 public class Director {
 
@@ -46,12 +42,27 @@ public class Director {
     @JsonProperty("lastNameMother")
     private String lastNameMother;
 
-    //Relation OneToMany with movie
-    @Column(name = "Movie")
-    @JsonProperty("Movie")
-    @JsonManagedReference
-    @OneToMany(mappedBy = "idDirector", cascade = CascadeType.ALL, orphanRemoval = true)
+    // RELACIONES
+    // RELACIÓN CON PELÍCULA
+    @OneToMany(mappedBy = "director")
+    @JsonIgnore
     private List<Movie> movies;
+
+    public Director(String firstName, int idDirector, String lastNameFather, String lastNameMother, List<Movie> movies) {
+        this.firstName = firstName;
+        this.idDirector = idDirector;
+        this.lastNameFather = lastNameFather;
+        this.lastNameMother = lastNameMother;
+        this.movies = movies;
+    }
+
+    public Director() {
+  
+    }
+
+
+
+
 
     public int getIdDirector() {
         return idDirector;
@@ -83,6 +94,14 @@ public class Director {
 
     public void setLastNameMother(String lastNameMother) {
         this.lastNameMother = lastNameMother;
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
     @Override

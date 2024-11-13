@@ -13,6 +13,17 @@ public class ShareSocialNetwork {
     private String idNetwork;
     private String nameNetwork;
     private String urlNetwork;
+
+    public ShareSocialNetwork(String idNetwork, String nameNetwork, String urlNetwork) {
+        this.idNetwork = idNetwork;
+        this.nameNetwork = nameNetwork;
+        this.urlNetwork = urlNetwork;
+    }
+
+    public ShareSocialNetwork() {
+   
+    }
+
     
     public String getIdNetwork(){
         return idNetwork;

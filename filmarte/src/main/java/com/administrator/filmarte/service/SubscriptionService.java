@@ -47,4 +47,22 @@ public class SubscriptionService {
         Page<Subscription> subscriptionsPage = repo.findAll(pageReq);
         return subscriptionsPage.getContent();
     }
+
+    public List<Subscription> findByMembershipType(String membershipType) {
+        return repo.findByMembershipType(membershipType);
+    }
+
+    public List<Subscription> findByCost(double cost) {
+        return repo.findByCost(cost);
+    }
+
+    public List<Subscription> findByDuration(int duration) {
+        return repo.findByDuration(duration);
+    }
+
+    public List<Subscription> findByPaymentMethod(String paymentMethod) {
+        return repo.findByPaymentMethod(paymentMethod);
+    }
+
+    
 }
