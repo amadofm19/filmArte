@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.administrator.filmarte.model;
 
 import java.util.Date;
@@ -21,10 +17,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-/**
- *
- * @author ARACELI
- */
 @Entity
 @Schema(description = "Entity representing a subscription in the system.")
 public class Subscription {
@@ -72,11 +64,9 @@ public class Subscription {
     @JsonProperty("renewalDate")
     private Date renewalDate;
 
-    // Relación con pagos
-    @OneToMany(mappedBy = "subscription") // Se mapea por el atributo 'subscription' de la clase Pay
+    @OneToMany(mappedBy = "subscription")
     @JsonIgnore
     private List<Pay> payments;
-    // Relación muchos a uno con User
 
     public Subscription(double cost, int duration, int idSubscription, String membershipType, String paymentMethod, List<Pay> payments, Date renewalDate, Date startDate) {
         this.cost = cost;
@@ -90,12 +80,8 @@ public class Subscription {
     }
 
     public Subscription() {
-    
+
     }
-
-
-
-    
 
     public int getIdSubscription() {
         return idSubscription;
@@ -163,8 +149,6 @@ public class Subscription {
 
     @Override
     public String toString() {
-        return "Subscription{" + "idSubscription=" + idSubscription + ", membershipType=" + membershipType + ", cost="
-                + cost + ", duration=" + duration + ", paymentMethod=" + paymentMethod + ", startDate=" + startDate
-                + ", renewalDate=" + renewalDate + '}';
+        return "Subscription{" + "idSubscription=" + idSubscription + ", membershipType=" + membershipType + ", cost=" + cost + ", duration=" + duration + ", paymentMethod=" + paymentMethod + ", startDate=" + startDate + ", renewalDate=" + renewalDate + '}';
     }
 }

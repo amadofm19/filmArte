@@ -55,14 +55,10 @@ public class Administrator {
     @JsonProperty("password")
     private String password;
 
-    // RELACIONES
-    // RELACION CON PELICULA
-    @OneToMany(mappedBy = "administrator") // Se refiere al atributo 'administrator' en Movie
+    @OneToMany(mappedBy = "administrator")
     @JsonIgnore
     private List<Movie> movies;
 
-
-    
     public Administrator(int idAdministrator, String name, String lastname, String email, String password, List<Movie> movies) {
         this.idAdministrator = idAdministrator;
         this.name = name;
@@ -74,10 +70,6 @@ public class Administrator {
 
     public Administrator() {
     }
-
-
-
-
 
     public int getIdAdministrator() {
         return idAdministrator;

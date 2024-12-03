@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,40 +29,38 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
+@Validated
 @RestController
 @RequestMapping("users")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @Tag(name = "User", description = "Provides methods for managing users")
 public class UserController {
 
     @Autowired
     private UserService service;
 
-    @Operation(summary = "Get all users")
-    @ApiResponse(responseCode = "200", description = "Found users", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class))) })
+    @Operation(summary = "Get all users or with pagination")
     @GetMapping
-    public List<User> getAll() {
-        return service.getAll();
-    }
-
-    @Operation(summary = "Get all users with pagination")
-    @GetMapping(value = "/pagination", params = { "page", "size" })
-    public List<User> getAllPaginated(
+    public ResponseEntity<List<User>> getAllUsers(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
-        List<User> users = service.getAll(page, pageSize);
-        return users;
+        if (page >= 0 && pageSize > 0) {
+            List<User> users = service.getAll(page, pageSize);
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } else {
+            List<User> users = service.getAll();
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }
     }
 
     @Operation(summary = "Get a user by his or her ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid control number supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "User found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
+        @ApiResponse(responseCode = "400", description = "Invalid control number supplied", content = @Content),
+        @ApiResponse(responseCode = "404", description = "User not found", content = @Content)})
     @GetMapping("{idUser}")
     public ResponseEntity<User> getById(@PathVariable Integer idUser) {
         try {
@@ -74,20 +73,20 @@ public class UserController {
 
     @Operation(summary = "Register a user")
     @ApiResponse(responseCode = "201", description = "User registered successfully", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) })
+        @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))})
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> registrar(@RequestBody User user) {
+    public ResponseEntity<String> registrar(@Valid @RequestBody User user) {
         service.save(user);
         return new ResponseEntity<>("Saved record", HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Updated record", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "Updated record", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
+        @ApiResponse(responseCode = "404", description = "User not found", content = @Content)})
     @PutMapping("{idUser}")
-    public ResponseEntity<String> update(@RequestBody User user, @PathVariable Integer idUser) {
+    public ResponseEntity<String> update(@Valid @RequestBody User user, @PathVariable Integer idUser) {
         try {
             User auxUser = service.getById(idUser);
             user.setIdUser(auxUser.getIdUser());
@@ -100,8 +99,8 @@ public class UserController {
 
     @Operation(summary = "Delete a user by his or her ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Record not found with the provided ID", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "User deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Record not found with the provided ID", content = @Content)})
     @DeleteMapping("{idUser}")
     public ResponseEntity<String> delete(@PathVariable Integer idUser) {
         try {
@@ -114,9 +113,9 @@ public class UserController {
 
     @Operation(summary = "Search users by name")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found users", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class))) }),
-            @ApiResponse(responseCode = "404", description = "No users found", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "Found users", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))}),
+        @ApiResponse(responseCode = "404", description = "No users found", content = @Content)})
     @GetMapping("/search")
     public ResponseEntity<List<User>> searchByName(@RequestParam String name) {
         List<User> users = service.findByName(name);
@@ -128,9 +127,9 @@ public class UserController {
 
     @Operation(summary = "Search users by membership type")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found users", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class))) }),
-            @ApiResponse(responseCode = "404", description = "No users found", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "Found users", content = {
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))}),
+        @ApiResponse(responseCode = "404", description = "No users found", content = @Content)})
     @GetMapping("/search/membership")
     public ResponseEntity<?> searchByMembership(@RequestParam String membership) {
         List<User> users = service.findByMembership(membership);
@@ -139,5 +138,4 @@ public class UserController {
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-
 }

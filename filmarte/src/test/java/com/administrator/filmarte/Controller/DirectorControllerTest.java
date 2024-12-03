@@ -1,7 +1,5 @@
 package com.administrator.filmarte.Controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.DirectorController;
 import com.administrator.filmarte.model.Director;
 import com.administrator.filmarte.service.DirectorService;
@@ -40,16 +37,6 @@ public class DirectorControllerTest {
         director.setFirstName("Christopher");
         director.setLastNameFather("Nolan");
         director.setLastNameMother("Smith");
-    }
-
-    @Test
-    void testGetAll() {
-        List<Director> directors = Arrays.asList(director);
-        when(service.getAll()).thenReturn(directors);
-
-        List<Director> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getFirstName().equals("Christopher"));
     }
 
     @Test

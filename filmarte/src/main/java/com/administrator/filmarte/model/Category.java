@@ -34,15 +34,15 @@ public class Category {
     private String categoryType;
 
     @Schema(description = "Description of the category.", example = "Includes movies, music, and games.")
+    @NotBlank(message = "The description must not be blank.")
     @Size(max = 255, message = "Description must be at most 255 characters")
     @Column(name = "description")
     @JsonProperty("description")
     private String description;
 
     @OneToMany(mappedBy = "category")
-    @JsonIgnore // Evitar que la lista de películas se incluya en la serialización
+    @JsonIgnore 
     private List<Movie> movies;
-    // Getters y Setters
 
     public Category(String categoryType, String description, int idCategory, List<Movie> movies) {
         this.categoryType = categoryType;
@@ -52,10 +52,8 @@ public class Category {
     }
 
     public Category() {
-       
+
     }
-
-
 
     public int getIdCategory() {
         return idCategory;
@@ -91,11 +89,11 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "idCategory=" + idCategory +
-                ", categoryType='" + categoryType + '\'' +
-                ", description='" + description + '\'' +
-                ", movies=" + movies +
-                '}';
+        return "Category{"
+                + "idCategory=" + idCategory
+                + ", categoryType='" + categoryType + '\''
+                + ", description='" + description + '\''
+                + ", movies=" + movies
+                + '}';
     }
 }

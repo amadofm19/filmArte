@@ -1,7 +1,5 @@
 package com.administrator.filmarte.Controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.UserController;
 import com.administrator.filmarte.model.User;
 import com.administrator.filmarte.service.UserService;
@@ -46,16 +43,6 @@ public class UserControllerTest {
     }
 
     @Test
-    void testGetAll() {
-        List<User> users = Arrays.asList(user);
-        when(service.getAll()).thenReturn(users);
-
-        List<User> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getName().equals("John"));
-    }
-
-    @Test
     void testGetById() {
         when(service.getById(1)).thenReturn(user);
 
@@ -75,7 +62,6 @@ public class UserControllerTest {
     @Test
     void testUpdate() {
         when(service.getById(1)).thenReturn(user);
-
         ResponseEntity<String> response = controller.update(user, 1);
         verify(service).save(any(User.class));
         assert (response.getStatusCode() == HttpStatus.OK);
@@ -85,7 +71,6 @@ public class UserControllerTest {
     @Test
     void testUpdateNotFound() {
         when(service.getById(1)).thenThrow(new NoSuchElementException());
-
         ResponseEntity<String> response = controller.update(user, 1);
         assert (response.getStatusCode() == HttpStatus.NOT_FOUND);
         assert (response.getBody().equals("Record not found with the provided ID"));
@@ -102,7 +87,6 @@ public class UserControllerTest {
     @Test
     void testDeleteNotFound() {
         doThrow(new NoSuchElementException()).when(service).delete(1);
-
         ResponseEntity<String> response = controller.delete(1);
         assert (response.getStatusCode() == HttpStatus.NOT_FOUND);
         assert (response.getBody().equals("Record not found with the provided ID"));

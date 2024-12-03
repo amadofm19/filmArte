@@ -1,9 +1,8 @@
 package com.administrator.filmarte.model;
 
 import java.sql.Date;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,9 +40,9 @@ public class Pay {
 
     @Schema(description = "Date of the payment.", example = "2023-01-01", required = true)
     @NotNull(message = "The payment date must not be null")
-    @Column(name = "paymentDay") // Asegúrate de que se use paymentDay
-    @JsonProperty("paymentDay") // Asegúrate de que el JSON también refleje esto
-    private Date paymentDay; // Cambiado a paymentDay
+    @Column(name = "paymentDay")
+    @JsonProperty("paymentDay")
+    private Date paymentDay;
 
     @Schema(description = "Method of the payment.", example = "Credit Card", required = true)
     @NotBlank(message = "The payment method must not be null and must contain at least one non-whitespace character")
@@ -52,9 +51,9 @@ public class Pay {
     @JsonProperty("paymentMethod")
     private String paymentMethod;
 
-    // Relación con la entidad Subscription
     @ManyToOne
-    @JoinColumn(name = "idSubscription", nullable = false) // Clave foránea
+    @JoinColumn(name = "idSubscription", nullable = false)
+    @JsonIgnore
     @JsonProperty("subscription")
     private Subscription subscription;
 
@@ -68,11 +67,9 @@ public class Pay {
     }
 
     public Pay() {
-      
-    }
-    
 
-    
+    }
+
     public int getIdPay() {
         return idPay;
     }
@@ -97,11 +94,11 @@ public class Pay {
         this.currency = currency;
     }
 
-    public Date getPaymentDay() { // Cambiado a getPaymentDay
+    public Date getPaymentDay() { 
         return paymentDay;
     }
 
-    public void setPaymentDay(Date paymentDay) { // Cambiado a setPaymentDay
+    public void setPaymentDay(Date paymentDay) { 
         this.paymentDay = paymentDay;
     }
 

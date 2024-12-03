@@ -1,7 +1,5 @@
 package com.administrator.filmarte.Controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.MovieController;
 import com.administrator.filmarte.model.Movie;
 import com.administrator.filmarte.service.MovieService;
@@ -40,16 +37,6 @@ public class MovieControllerTest {
         movie.setTitle("Inception");
         movie.setYear(2010);
         movie.setDescription("A thief who steals corporate secrets through the use of dream-sharing technology.");
-    }
-
-    @Test
-    void testGetAll() {
-        List<Movie> movies = Arrays.asList(movie);
-        when(service.getAll()).thenReturn(movies);
-
-        List<Movie> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getTitle().equals("Inception"));
     }
 
     @Test

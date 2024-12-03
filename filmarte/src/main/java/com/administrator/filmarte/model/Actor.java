@@ -15,11 +15,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author ARACELI
  */
+
+ @Getter
+ @Setter
 @Entity
 @Table(name = "actor")
 @Schema(description = "Entity representing an actor in the system.")
@@ -47,6 +52,7 @@ public class Actor {
     private String lastName;
 
     @Schema(description = "Description of the actor.", example = "An experienced actor in theater and film.")
+    @NotBlank(message = "The description must not be blank.")
     @Size(max = 255, message = "Description must be at most 255 characters")
     @Column(name = "description")
     @JsonProperty("description")
@@ -65,41 +71,37 @@ public class Actor {
     // RELACIONES
     // RELACION CON Movie_Actor
 
-    public int getIdActor() {
-        return idActor;
-    }
+    // public int getIdActor() {
+    //     return idActor;
+    // }
 
-    public void setIdActor(int idActor) {
-        this.idActor = idActor;
-    }
+    // public void setIdActor(int idActor) {
+    //     this.idActor = idActor;
+    // }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    // public String getFirstName() {
+    //     return firstName;
+    // }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    // public void setFirstName(String firstName) {
+    //     this.firstName = firstName;
+    // }
 
-    public String getLastName() {
-        return lastName;
-    }
+    // public String getLastName() {
+    //     return lastName;
+    // }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    // public void setLastName(String lastName) {
+    //     this.lastName = lastName;
+    // }
 
-    public String getDescription() {
-        return description;
-    }
+    // public String getDescription() {
+    //     return description;
+    // }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    
-
-    
+    // public void setDescription(String description) {
+    //     this.description = description;
+    // }
 
 
     @Override

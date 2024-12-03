@@ -4,7 +4,6 @@ import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +19,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Schema(description = "Entity representing a reward in the system.")
 public class Reward {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the reward.", example = "1", required = true)
@@ -47,13 +47,10 @@ public class Reward {
     @JsonProperty("nomination")
     private String nomination;
 
-    // Relación con Movie
     @ManyToOne
-    @JoinColumn(name = "idMovie", nullable = false) // Cambia el nombre a idMovie
-    @JsonIgnore // Asegura que se serialice correctamente
+    @JoinColumn(name = "idMovie", nullable = false)
+    @JsonIgnore
     private Movie movie;
-
-    // Getters y Setters
 
     public Reward(Date deliveryDate, int idReward, Movie movie, String nameReward, String nomination) {
         this.deliveryDate = deliveryDate;
@@ -66,7 +63,6 @@ public class Reward {
     public Reward() {
 
     }
-
 
     public int getIdReward() {
         return idReward;

@@ -39,41 +39,45 @@ public class FavoritesList {
     @JsonProperty("description")
     private String description;
 
-    @Schema(description = "Genre of the movie.", example = "Sci-Fi", required = true)
+    @Schema(description = "Genere of the movie.", example = "Sci-Fi", required = true)
     @NotBlank(message = "El género no puede estar en blanco.")
-    @Column(name = "genre")
-    @JsonProperty("genre")
-    private String genre;
+    @Column(name = "genere")
+    @JsonProperty("genere")
+    private String genere;
 
     @Schema(description = "Viewing status of the movie.", example = "Watched", required = true)
     @NotBlank(message = "El estado de visualización no puede estar en blanco.")
     @Column(name = "viewingStatus")
     @JsonProperty("viewingStatus")
-    private String viewingStatus; // Estado de visualización
+    private String viewingStatus;
 
     @Schema(description = "Rating given to the movie.", example = "5", required = true)
-    @NotNull(message = "La calificación no puede ser nula.")
+    @NotBlank(message = "The rating must not be blank.")
+    @NotNull(message = "The rating cannot be null.")
     @Column(name = "rating")
     @JsonProperty("rating")
-    private int rating; // Calificación
+    private int rating;
 
     @Schema(description = "Duration of the movie in minutes.", example = "148", required = true)
+    @NotBlank(message = "The duration must not be blank.")
     @NotNull(message = "La duración no puede ser nula.")
     @Column(name = "duration")
     @JsonProperty("duration")
-    private int duration; // Duración en minutos
+    private int duration;
 
-    // @OneToOne(mappedBy = "favoritesList", cascade = CascadeType.ALL, fetch =
-    // FetchType.LAZY)
     @ManyToOne
-    @JoinColumn(name = "idUsers", referencedColumnName = "idUsers")
+    @JoinColumn(name = "idUser", referencedColumnName = "idUser")
     @JsonBackReference
     private User user;
 
-    public FavoritesList(String description, int duration, String genre, int idFavoritesList, String movieTitle, int rating, User user, String viewingStatus) {
+    public FavoritesList() {
+
+    }
+
+    public FavoritesList(String description, int duration, String genere, int idFavoritesList, String movieTitle, int rating, User user, String viewingStatus) {
         this.description = description;
         this.duration = duration;
-        this.genre = genre;
+        this.genere = genere;
         this.idFavoritesList = idFavoritesList;
         this.movieTitle = movieTitle;
         this.rating = rating;
@@ -81,14 +85,6 @@ public class FavoritesList {
         this.viewingStatus = viewingStatus;
     }
 
-    
-    public FavoritesList() {
-  
-    }
-    
-
-    
-    // Getters y Setters
     public int getIdFavoritesList() {
         return idFavoritesList;
     }
@@ -113,12 +109,12 @@ public class FavoritesList {
         this.description = description;
     }
 
-    public String getGenre() {
-        return genre;
+    public String getGenere() {
+        return genere;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setGenere(String genere) {
+        this.genere = genere;
     }
 
     public String getViewingStatus() {
@@ -153,10 +149,10 @@ public class FavoritesList {
         this.user = user;
     }
 
-    // Método toString para mostrar la información de la lista de favoritos
     @Override
     public String toString() {
-        return idFavoritesList + " :: " + movieTitle + " :: " + description + " :: " + genre +
-                " :: " + viewingStatus + " :: " + rating + " :: " + duration;
+        return "FavoritesList {idFavoritesList=" + idFavoritesList + ", movieTitle=" + movieTitle + ", description="
+                + description + ", genere=" + genere + ", viewingStatus=" + viewingStatus + ", rating=" + rating
+                + ", duration=" + duration + ", user=" + user + '}';
     }
 }

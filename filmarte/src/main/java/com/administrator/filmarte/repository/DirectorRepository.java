@@ -15,43 +15,36 @@ public interface DirectorRepository extends JpaRepository<Director, Integer> {
     List<Director> findByLastNameFather(String lastNameFather);
     List<Director> findByLastNameMother(String lastNameMother);
 
-    // BY ID
     @Query(value = "SELECT * FROM director WHERE idDirector = :idDirector", nativeQuery = true)
     Director getDirectorById(@Param("idDirector") int idDirector);
 
     @Query(value = "SELECT d FROM Director d WHERE d.idDirector = :idDirector")
     Director getDirectorByIdJPQL(@Param("idDirector") int idDirector);
 
-    // BY FIRST NAME
     @Query(value = "SELECT * FROM director WHERE firstName = :firstName", nativeQuery = true)
     List<Director> getDirectorsByFirstName(@Param("firstName") String firstName);
 
     @Query(value = "SELECT d FROM Director d WHERE d.firstName = :firstName")
     List<Director> getDirectorsByFirstNameJPQL(@Param("firstName") String firstName);
 
-    // BY LAST NAME FATHER
     @Query(value = "SELECT * FROM director WHERE lastNameFather = :lastNameFather", nativeQuery = true)
     List<Director> getDirectorsByLastNameFather(@Param("lastNameFather") String lastNameFather);
 
     @Query(value = "SELECT d FROM Director d WHERE d.lastNameFather = :lastNameFather")
     List<Director> getDirectorsByLastNameFatherJPQL(@Param("lastNameFather") String lastNameFather);
 
-    // BY LAST NAME MOTHER
     @Query(value = "SELECT * FROM director WHERE lastNameMother = :lastNameMother", nativeQuery = true)
     List<Director> getDirectorsByLastNameMother(@Param("lastNameMother") String lastNameMother);
 
     @Query(value = "SELECT d FROM Director d WHERE d.lastNameMother = :lastNameMother")
     List<Director> getDirectorsByLastNameMotherJPQL(@Param("lastNameMother") String lastNameMother);
 
-    // BY LETTER FIRST NAME STARTING WITH
     @Query(value = "SELECT * FROM director WHERE firstName LIKE CONCAT(:letter, '%')", nativeQuery = true)
     List<Director> getDirectorsByFirstNameStartingWith(@Param("letter") String letter);
 
-    // BY LETTER LAST NAME FATHER STARTING WITH
     @Query(value = "SELECT * FROM director WHERE lastNameFather LIKE CONCAT(:letter, '%')", nativeQuery = true)
     List<Director> getDirectorsByLastNameFatherStartingWith(@Param("letter") String letter);
 
-    // BY LETTER LAST NAME MOTHER STARTING WITH
     @Query(value = "SELECT * FROM director WHERE lastNameMother LIKE CONCAT(:letter, '%')", nativeQuery = true)
     List<Director> getDirectorsByLastNameMotherStartingWith(@Param("letter") String letter);
 

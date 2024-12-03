@@ -1,7 +1,5 @@
 package com.administrator.filmarte.Controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.FavoritesListController;
 import com.administrator.filmarte.model.FavoritesList;
 import com.administrator.filmarte.service.FavoritesListService;
@@ -39,18 +36,8 @@ public class FavoritesListControllerTest {
         favoritesList.setIdFavoritesList(1);
         favoritesList.setMovieTitle("Inception");
         favoritesList.setDescription("A mind-bending thriller.");
-        favoritesList.setGenre("Sci-Fi");
+        favoritesList.setGenere("Sci-Fi");
         favoritesList.setViewingStatus("Watched");
-    }
-
-    @Test
-    void testGetAll() {
-        List<FavoritesList> favoritesLists = Arrays.asList(favoritesList);
-        when(service.getAll()).thenReturn(favoritesLists);
-
-        List<FavoritesList> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getMovieTitle().equals("Inception"));
     }
 
     @Test

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.administrator.filmarte.controller.CategoryController;
 import com.administrator.filmarte.model.Category;
 import com.administrator.filmarte.service.CategoryService;
@@ -50,9 +51,10 @@ public class CategoryControllerTest {
     @Test
     void testGetAll() throws Exception {
         List<Category> categories = Arrays.asList(category);
-        when(categoryService.getAll()).thenReturn(categories);
-
-        mockMvc.perform(get("/categories"))
+        when(categoryService.getAll(anyInt(), anyInt())).thenReturn(categories);
+        mockMvc.perform(get("/categories/pagination")
+                .param("page", "0")
+                .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].categoryType").value(category.getCategoryType()));
     }

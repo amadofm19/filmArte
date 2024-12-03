@@ -42,8 +42,6 @@ public class Director {
     @JsonProperty("lastNameMother")
     private String lastNameMother;
 
-    // RELACIONES
-    // RELACIÓN CON PELÍCULA
     @OneToMany(mappedBy = "director")
     @JsonIgnore
     private List<Movie> movies;
@@ -57,12 +55,8 @@ public class Director {
     }
 
     public Director() {
-  
+
     }
-
-
-
-
 
     public int getIdDirector() {
         return idDirector;
@@ -106,11 +100,11 @@ public class Director {
 
     @Override
     public String toString() {
-        return "Director{" +
-                "idDirector=" + idDirector +
-                ", firstName='" + firstName + '\'' +
-                ", lastNameFather='" + lastNameFather + '\'' +
-                ", lastNameMother='" + lastNameMother + '\'' +
-                '}';
+        return "Director{"
+                + "idDirector=" + idDirector
+                + ", firstName='" + firstName + '\''
+                + ", lastNameFather='" + lastNameFather + '\''
+                + ", lastNameMother='" + lastNameMother + '\''
+                + '}';
     }
 }

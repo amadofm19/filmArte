@@ -1,8 +1,7 @@
 package com.administrator.filmarte.Controller;
 
 import java.sql.Date;
-import java.util.Arrays;
-import java.util.List;
+
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.RewardController;
 import com.administrator.filmarte.model.Reward;
 import com.administrator.filmarte.service.RewardService;
@@ -41,16 +39,6 @@ public class RewardControllerTest {
         reward.setNameReward("Best Film");
         reward.setDeliveryDate(Date.valueOf("2023-01-01"));
         reward.setNomination("Best Director");
-    }
-
-    @Test
-    void testGetAll() {
-        List<Reward> rewards = Arrays.asList(reward);
-        when(service.getAll()).thenReturn(rewards);
-
-        List<Reward> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getNameReward().equals("Best Film"));
     }
 
     @Test

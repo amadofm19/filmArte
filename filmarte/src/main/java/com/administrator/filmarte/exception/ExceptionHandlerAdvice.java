@@ -2,20 +2,40 @@ package com.administrator.filmarte.exception;
 
 import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeoutException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import jakarta.persistence.EntityNotFoundException;
 
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ModelAndView handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("errors", errors);
+        mav.setViewName("methodArgumentNotValid");
+        return mav;
+    }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<?> handleException(NoSuchElementException e) {
@@ -26,11 +46,6 @@ public class ExceptionHandlerAdvice {
     public ResponseEntity<?> handleSQLException(SQLException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("A database error occurred: " + e.getMessage());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Method argument not valid: " + e.getMessage());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,36 +22,35 @@ import org.springframework.web.bind.annotation.RestController;
 import com.administrator.filmarte.model.History;
 import com.administrator.filmarte.service.HistoryService;
 
-import io.swagger.v3.oas.annotations.Operation; // Importar la anotación Operation
-import io.swagger.v3.oas.annotations.responses.ApiResponse; // Importar la anotación ApiResponse
-import io.swagger.v3.oas.annotations.media.Content; // Importar la anotación Content
-import io.swagger.v3.oas.annotations.media.Schema; // Importar la anotación Schema
-import io.swagger.v3.oas.annotations.tags.Tag; // Importar la anotación Tag
-import io.swagger.v3.oas.annotations.media.ArraySchema; // Importar la anotación ArraySchema
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
+@Validated
 @RestController
 @RequestMapping("/histories")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @Tag(name = "Histories", description = "Provides methods for managing histories")
 public class HistoryController {
 
     @Autowired
     private HistoryService service;
 
-    @Operation(summary = "Get all histories")
-    @ApiResponse(responseCode = "200", description = "Found histories", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = History.class))))
+    @Operation(summary = "Get all histories or histories with pagination")
     @GetMapping
-    public List<History> getAll() {
-        return service.getAll();
-    }
-
-    @Operation(summary = "Get histories with pagination")
-    @GetMapping(value = "pagination", params = { "page", "size" })
-    public List<History> getAllPaginated(
+    public ResponseEntity<List<History>> getAllHistories(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
-        return service.getAll(page, pageSize);
+        if (page >= 0 && pageSize > 0) {
+            List<History> histories = service.getAll(page, pageSize);
+            return new ResponseEntity<>(histories, HttpStatus.OK);
+        } else {
+            List<History> histories = service.getAll();
+            return new ResponseEntity<>(histories, HttpStatus.OK);
+        }
     }
 
     @Operation(summary = "Get a history by ID")
@@ -65,7 +65,7 @@ public class HistoryController {
     @Operation(summary = "Register a new history")
     @ApiResponse(responseCode = "201", description = "History registered successfully")
     @PostMapping
-    public ResponseEntity<String> register(@RequestBody History history) {
+    public ResponseEntity<String> register(@Valid @RequestBody History history) {
         service.save(history);
         return new ResponseEntity<>("History registered successfully", HttpStatus.CREATED);
     }
@@ -74,7 +74,7 @@ public class HistoryController {
     @ApiResponse(responseCode = "200", description = "Record updated successfully")
     @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
     @PutMapping("{idHistory}")
-    public ResponseEntity<String> update(@RequestBody History history, @PathVariable Integer idHistory) {
+    public ResponseEntity<String> update(@Valid @RequestBody History history, @PathVariable Integer idHistory) {
         try {
             History auxHistory = service.getById(idHistory);
             history.setIdHistory(auxHistory.getIdHistory());
@@ -118,12 +118,12 @@ public class HistoryController {
         return new ResponseEntity<>(histories, HttpStatus.OK);
     }
 
-    @Operation(summary = "Search histories by genre")
-    @GetMapping("/search/genre")
-    public ResponseEntity<?> searchByGenre(@RequestParam String genre) {
-        List<History> histories = service.findByGenre(genre);
+    @Operation(summary = "Search histories by genere")
+    @GetMapping("/search/genere")
+    public ResponseEntity<?> searchByGenere(@RequestParam String genere) {
+        List<History> histories = service.findByGenere(genere);
         if (histories.isEmpty()) {
-            return new ResponseEntity<>("No histories found for the specified genre", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No histories found for the specified genere", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(histories, HttpStatus.OK);
     }

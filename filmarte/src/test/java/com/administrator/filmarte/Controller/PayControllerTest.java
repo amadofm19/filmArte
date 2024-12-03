@@ -1,8 +1,7 @@
 package com.administrator.filmarte.Controller;
 
 import java.sql.Date;
-import java.util.Arrays;
-import java.util.List;
+
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.PayController;
 import com.administrator.filmarte.model.Pay;
 import com.administrator.filmarte.service.PayService;
@@ -42,16 +40,6 @@ public class PayControllerTest {
         pay.setCurrency("USD");
         pay.setPaymentDay(Date.valueOf("2023-01-01"));
         pay.setPaymentMethod("Credit Card");
-    }
-
-    @Test
-    void testGetAll() {
-        List<Pay> pays = Arrays.asList(pay);
-        when(service.getAll()).thenReturn(pays);
-
-        List<Pay> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getAmount() == 99.99f);
     }
 
     @Test

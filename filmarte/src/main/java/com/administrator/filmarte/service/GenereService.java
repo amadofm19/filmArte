@@ -2,15 +2,12 @@ package com.administrator.filmarte.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import com.administrator.filmarte.model.Genre;
+import com.administrator.filmarte.model.Genere;
 import com.administrator.filmarte.repository.GenereRepository;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -20,15 +17,15 @@ public class GenereService {
     @Autowired
     private GenereRepository repo;
 
-    public List<Genre> getAll() {
+    public List<Genere> getAll() {
         return repo.findAll();
     }
 
-    public void save(Genre genero) {
+    public void save(Genere genero) {
         repo.save(genero);
     }
 
-    public Genre getById(Integer id) {
+    public Genere getById(Integer id) {
         return repo.findById(id).orElseThrow(() -> new NoSuchElementException("Genere not found"));
     }
 
@@ -36,11 +33,9 @@ public class GenereService {
         repo.deleteById(id);
     }
 
-    public List<Genre> getAll(int page, int pageSize) {
+    public List<Genere> getAll(int page, int pageSize) {
         PageRequest pageReq = PageRequest.of(page, pageSize);
-        Page<Genre> genrePage = repo.findAll(pageReq);
-        return genrePage.getContent();
+        Page<Genere> generePage = repo.findAll(pageReq);
+        return generePage.getContent();
     }
-
-    
 }

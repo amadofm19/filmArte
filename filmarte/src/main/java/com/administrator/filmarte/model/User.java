@@ -2,8 +2,9 @@ package com.administrator.filmarte.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,9 +26,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier for the user.", example = "1", required = true)
-    @Column(name = "idUsers")
-    @JsonProperty("idUsers")
-    private int idUsers;
+    @Column(name = "idUser")
+    @JsonProperty("idUser")
+    private int idUser;
 
     @Schema(description = "First name of the user.", example = "John", required = true)
     @NotBlank(message = "First name is mandatory")
@@ -72,38 +73,32 @@ public class User {
 
     @OneToOne
     @JoinColumn(name = "idSubscription", referencedColumnName = "idSubscription")
+    @JsonIgnore
     @JsonProperty("subscription")
     private Subscription subscription;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @JsonProperty("favoritesList")
     private List<FavoritesList> favoritesList;
 
-    // @OneToOne
-    // @JoinColumn(name = "idFavoritesList", referencedColumnName =
-    // "idFavoritesList")
-    // @JsonProperty("favoritesList")
-    // private FavoritesList favoritesList;
-
     @OneToOne
     @JoinColumn(name = "idHistory", referencedColumnName = "idHistory")
+    @JsonIgnore
     @JsonProperty("history")
     private History history;
 
-    // Relación uno a muchos con Comment
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty("comments")
-    private List<Comment> comments;
+    @JsonIgnore
+    @JsonProperty("comment")
+    private List<Comment> comment;
 
-
-    // Getters y setters
-
-    public User(List<Comment> comments, String email, List<FavoritesList> favoritesList, History history, int idUsers, String lastname, String membership, String name, String password, Subscription subscription, String username) {
-        this.comments = comments;
+    public User(List<Comment> comment, String email, List<FavoritesList> favoritesList, History history, int idUser, String lastname, String membership, String name, String password, Subscription subscription, String username) {
+        this.comment = comment;
         this.email = email;
         this.favoritesList = favoritesList;
         this.history = history;
-        this.idUsers = idUsers;
+        this.idUser = idUser;
         this.lastname = lastname;
         this.membership = membership;
         this.name = name;
@@ -116,15 +111,12 @@ public class User {
  
     }
 
-
-
-
     public int getIdUser() {
-        return idUsers;
+        return idUser;
     }
 
-    public void setIdUser(int idUsers) {
-        this.idUsers = idUsers;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     public String getName() {
@@ -183,16 +175,6 @@ public class User {
         this.subscription = subscription;
     }
 
-    /*
-     * public FavoritesList getFavoritesList() {
-     * return (FavoritesList) favoritesList;
-     * }
-     * 
-     * public void setFavoritesList(FavoritesList favoritesList) {
-     * this.favoritesList = favoritesList;
-     * }
-     */
-
     public History getHistory() {
         return history;
     }
@@ -201,29 +183,17 @@ public class User {
         this.history = history;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public List<Comment> getComment() {
+        return comment;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setComment(List<Comment> comment) {
+        this.comment = comment;
     }
 
 
     @Override
     public String toString() {
-        return "User{" +
-                "idUser=" + idUsers +
-                ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", membership='" + membership + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", subscription=" + subscription +
-                ", favoritesList=" + favoritesList +
-                ", history=" + history +
-                ", comments=" + comments +
-                '}';
+        return "User{" + "idUser=" + idUser + ", name='" + name + ", lastname='" + lastname + ", email='" + email + ", membership='" + membership + "'username='" + username + ", password='" + password + ", subscription=" + subscription + ", favoritesList=" + favoritesList + ", history=" + history + ", comment=" + comment + '}';
     }
 }

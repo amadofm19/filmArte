@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,46 +22,44 @@ import com.administrator.filmarte.model.Reward;
 import com.administrator.filmarte.service.RewardService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
+@Validated
 @RestController
 @RequestMapping("rewards")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @Tag(name = "Reward", description = "Provides methods for managing rewards")
 public class RewardController {
+
     @Autowired
     private RewardService service;
 
-    @Operation(summary = "Get all rewards")
-    @ApiResponse(responseCode = "200", description = "Found rewards", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Reward.class))) })
-
+    @Operation(summary = "Get all rewards or rewards with pagination")
     @GetMapping
-    public List<Reward> getAll() {
-        return service.getAll();
-    }
-
-    @Operation(summary = "Get all rewards with pagination")
-    @GetMapping(value = "pagination", params = { "page", "pageSize" })
-    public List<Reward> getAllPaginated(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+    public ResponseEntity<List<Reward>> getAllRewards(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
-        List<Reward> rewards = service.getAll(page, pageSize);
-        return rewards;
+        if (page >= 0 && pageSize > 0) {
+            List<Reward> rewards = service.getAll(page, pageSize);
+            return new ResponseEntity<>(rewards, HttpStatus.OK);
+        } else {
+            List<Reward> rewards = service.getAll();
+            return new ResponseEntity<>(rewards, HttpStatus.OK);
+        }
     }
 
     @Operation(summary = "Get a reward by its id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Reward found", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Reward not found", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "Reward found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))}),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Reward not found", content = @Content)})
     @GetMapping("{idReward}")
     public ResponseEntity<Reward> getByIdReward(@PathVariable Integer idReward) {
         try {
@@ -73,20 +72,20 @@ public class RewardController {
 
     @Operation(summary = "Register a new reward")
     @ApiResponse(responseCode = "201", description = "Reward registered successfully", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class)) })
+        @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))})
     @PostMapping
-    public ResponseEntity<String> registrar(@RequestBody Reward reward) {
+    public ResponseEntity<String> registrar(@Valid @RequestBody Reward reward) {
         service.save(reward);
         return new ResponseEntity<>("Saved record", HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update an existing reward")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Updated record", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class)) }),
-            @ApiResponse(responseCode = "404", description = "Reward not found", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "Updated record", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Reward.class))}),
+        @ApiResponse(responseCode = "404", description = "Reward not found", content = @Content)})
     @PutMapping("{idReward}")
-    public ResponseEntity<String> update(@RequestBody Reward reward, @PathVariable Integer idReward) {
+    public ResponseEntity<String> update(@Valid @RequestBody Reward reward, @PathVariable Integer idReward) {
         try {
             Reward auxReward = service.getByIdReward(idReward);
             reward.setIdReward(auxReward.getIdReward());
@@ -97,10 +96,10 @@ public class RewardController {
         }
     }
 
-    @Operation(summary = "Delete a reward by its id")
+    @Operation(summary = "Delete a reward by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Reward deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Reward not found", content = @Content) })
+        @ApiResponse(responseCode = "200", description = "Reward deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Reward not found", content = @Content)})
     @DeleteMapping("{idReward}")
     public ResponseEntity<String> delete(@PathVariable Integer idReward) {
         try {
@@ -111,9 +110,8 @@ public class RewardController {
         }
     }
 
-
     @Operation(summary = "Search rewards by name")
-     @GetMapping("search/name")
+    @GetMapping("search/name")
     public ResponseEntity<?> getByNameReward(@RequestParam("nameReward") String nameReward) {
         List<Reward> rewards = service.findByNameReward(nameReward);
         if (rewards.isEmpty()) {
@@ -121,7 +119,6 @@ public class RewardController {
         }
         return new ResponseEntity<>(rewards, HttpStatus.OK);
     }
-
 
     @Operation(summary = "Search rewards by nomination")
     @GetMapping("search/nomination")

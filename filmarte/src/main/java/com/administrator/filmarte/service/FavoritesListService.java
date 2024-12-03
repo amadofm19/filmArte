@@ -2,13 +2,11 @@ package com.administrator.filmarte.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.administrator.filmarte.model.FavoritesList;
 import com.administrator.filmarte.repository.FavoritesListRepository;
 
@@ -39,8 +37,7 @@ public class FavoritesListService {
         throw new UnsupportedOperationException("Unimplemented method 'setId'");
     }
 
-
-      public List<FavoritesList> getAll(int page, int pageSize) {
+    public List<FavoritesList> getAll(int page, int pageSize) {
         PageRequest pageReq = PageRequest.of(page, pageSize);
         Page<FavoritesList> favoriteslistPage = repo.findAll(pageReq);
         return favoriteslistPage.getContent();
@@ -50,8 +47,8 @@ public class FavoritesListService {
         return repo.findByMovieTitleContainingIgnoreCase(title);
     }
 
-    public List<FavoritesList> findByGenre(String genre) {
-        return repo.findByGenreContainingIgnoreCase(genre);
+    public List<FavoritesList> findByGenere(String genere) {
+        return repo.findByGenereContainingIgnoreCase(genere);
     }
 
     public List<FavoritesList> findByViewingStatus(String status) {

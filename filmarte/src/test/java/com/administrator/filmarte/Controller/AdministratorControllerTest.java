@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +54,23 @@ public class AdministratorControllerTest {
     @Test
     void testGetAll() throws Exception {
         List<Administrator> administrators = Arrays.asList(administrator);
-        when(administratorService.getAll()).thenReturn(administrators);
+        when(administratorService.getAll(anyInt(), anyInt())).thenReturn(administrators);
 
-        mockMvc.perform(get("/administrators"))
+        mockMvc.perform(get("/administrators/pagination")
+                .param("page", "0")
+                .param("pageSize", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(administrator.getName()));
     }
 
+    // @Test
+    // void testGetAll() throws Exception {
+    //     List<Administrator> administrators = Arrays.asList(administrator);
+    //     when(administratorService.getAll()).thenReturn(administrators);
+    //     mockMvc.perform(get("/administrators"))
+    //             .andExpect(status().isOk())
+    //             .andExpect(jsonPath("$[0].name").value(administrator.getName()));
+    // }
     @Test
     void testGetByIdAdministrator() throws Exception {
         when(administratorService.getByIAdministrator(1)).thenReturn(administrator);

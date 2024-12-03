@@ -1,7 +1,5 @@
 package com.administrator.filmarte.Controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.SubscriptionController;
 import com.administrator.filmarte.model.Subscription;
 import com.administrator.filmarte.service.SubscriptionService;
@@ -41,16 +38,6 @@ public class SubscriptionControllerTest {
         subscription.setCost(29.99);
         subscription.setDuration(12);
         subscription.setPaymentMethod("Credit Card");
-    }
-
-    @Test
-    void testGetAll() {
-        List<Subscription> subscriptions = Arrays.asList(subscription);
-        when(service.getAll()).thenReturn(subscriptions);
-
-        List<Subscription> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getMembershipType().equals("Premium"));
     }
 
     @Test

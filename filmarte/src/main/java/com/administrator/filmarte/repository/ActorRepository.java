@@ -19,7 +19,6 @@ public interface ActorRepository extends JpaRepository<Actor, Integer> {
     List<Actor> findByLastNameContainingIgnoreCase(String lastName);
     List<Actor> findByDescriptionContainingIgnoreCase(String description);
 
-
     @Query(value = "SELECT a FROM Actor a WHERE a.firstName = :firstName")
     List<Actor> getActorsByFirstName(@Param("firstName") String firstName);
 
@@ -27,8 +26,7 @@ public interface ActorRepository extends JpaRepository<Actor, Integer> {
     List<Actor> getActorsByLastName(@Param("lastName") String lastName);
 
     @Query(value = "SELECT a FROM Actor a WHERE a.firstName = :firstName AND a.lastName = :lastName")
-    List<Actor> getActorsByFirstNameAndLastName(@Param("firstName") String firstName,
-            @Param("lastName") String lastName);
+    List<Actor> getActorsByFirstNameAndLastName(@Param("firstName") String firstName, @Param("lastName") String lastName);
 
     @Query(value = "SELECT a FROM Actor a WHERE a.firstName LIKE :letter%")
     List<Actor> getActorsByFirstNameStartingWith(@Param("letter") String letter);

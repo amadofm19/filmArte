@@ -32,6 +32,12 @@
 	</properties>
 	<dependencies>
 		<dependency>
+    		<groupId>com.nimbusds</groupId>
+    		<artifactId>nimbus-jose-jwt</artifactId>
+    		<version>9.31</version> <!-- Verifica si hay una versión más reciente -->
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
@@ -68,6 +74,7 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -90,13 +97,45 @@
     		<artifactId>jackson-databind</artifactId>
 		</dependency>
 
+
 		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
+    		<groupId>org.modelmapper</groupId>
+    		<artifactId>modelmapper</artifactId>
 			<version>3.2.1</version>
 		</dependency>
 
+			<dependency>
+    		<groupId>org.projectlombok</groupId>
+    		<artifactId>lombok</artifactId>
+			<version>1.18.34</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>3.3.5</version>
+		</dependency>
+
+		<dependency>
+    		<groupId>com.azure</groupId>
+    		<artifactId>azure-ai-textanalytics</artifactId>
+    		<version>5.5.3</version>
+		</dependency>
+	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+	</dependency>
+	<dependency>
+  		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter-security</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+  		<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+
 	</dependencies>
+
 
 	<build>
 		<plugins>

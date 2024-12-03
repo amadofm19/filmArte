@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.administrator.filmarte.controller.ActorController;
 import com.administrator.filmarte.model.Actor;
 import com.administrator.filmarte.service.ActorService;
@@ -40,7 +39,7 @@ public class ActorControllerTest {
 
     @BeforeEach
     void setUp() {
-        actor = new Actor(null, null, 0, null);//modify
+        actor = new Actor();
         actor.setIdActor(1);
         actor.setFirstName("John");
         actor.setLastName("Doe");
@@ -48,11 +47,11 @@ public class ActorControllerTest {
     }
 
     @Test
-    void testGetAll() throws Exception {
+    void testGetAllPaginated() throws Exception {
         List<Actor> actors = Arrays.asList(actor);
-        when(actorService.getAll()).thenReturn(actors);
+        when(actorService.getAll(0, 10)).thenReturn(actors);
 
-        mockMvc.perform(get("/actors"))
+        mockMvc.perform(get("/actors/pagination?page=0&size=10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].firstName").value(actor.getFirstName()));
     }
@@ -71,7 +70,7 @@ public class ActorControllerTest {
         mockMvc.perform(post("/actors")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(actor)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string("Saved record"));
     }
 

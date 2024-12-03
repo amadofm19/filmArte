@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,39 +23,36 @@ import com.administrator.filmarte.model.Movie;
 import com.administrator.filmarte.service.MovieService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
+@Validated
 @RestController
 @RequestMapping("/movies")
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE,
-        RequestMethod.PUT })
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @Tag(name = "Movies", description = "Provides methods for managing movies")
 public class MovieController {
 
     @Autowired
     private MovieService service;
 
-    @Operation(summary = "Get all movies")
-    @ApiResponse(responseCode = "200", description = "Found movies", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Movie.class))))
+    @Operation(summary = "Get all movies or movies with pagination")
     @GetMapping
-    public List<Movie> getAll() {
-        return service.getAll();
-    }
-
-    // AGREGADO
-    @Operation(summary = "Get all movies with pagination")
-    @GetMapping(value = "/pagination", params = { "page", "size" })
-    public List<Movie> getAllPaginated(
+    public ResponseEntity<List<Movie>> getAllMovies(
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize) {
-        List<Movie> movies = service.getAll(page, pageSize);
-        return movies;
+        if (page >= 0 && pageSize > 0) {
+            List<Movie> movies = service.getAll(page, pageSize);
+            return new ResponseEntity<>(movies, HttpStatus.OK);
+        } else {
+            List<Movie> movies = service.getAll();
+            return new ResponseEntity<>(movies, HttpStatus.OK);
+        }
     }
-
+    
     @Operation(summary = "Get a movie by ID")
     @ApiResponse(responseCode = "200", description = "Found the movie", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Movie.class)))
     @ApiResponse(responseCode = "404", description = "Movie not found")
@@ -67,7 +65,7 @@ public class MovieController {
     @Operation(summary = "Register a new movie")
     @ApiResponse(responseCode = "201", description = "Movie registered successfully")
     @PostMapping
-    public ResponseEntity<String> register(@RequestBody Movie movie) {
+    public ResponseEntity<String> register(@Valid @RequestBody Movie movie) {
         service.save(movie);
         return new ResponseEntity<>("Movie registered successfully", HttpStatus.CREATED);
     }
@@ -76,7 +74,7 @@ public class MovieController {
     @ApiResponse(responseCode = "200", description = "Record updated successfully")
     @ApiResponse(responseCode = "404", description = "Record not found with the provided ID")
     @PutMapping("{idMovie}")
-    public ResponseEntity<String> update(@RequestBody Movie movie, @PathVariable Integer idMovie) {
+    public ResponseEntity<String> update(@Valid @RequestBody Movie movie, @PathVariable Integer idMovie) {
         try {
             Movie auxMovie = service.getById(idMovie);
             movie.setIdMovie(auxMovie.getIdMovie());
@@ -112,25 +110,25 @@ public class MovieController {
     }
 
     @Operation(summary = "Get movies by year")
-@GetMapping("/search/year")
-public ResponseEntity<?> searchByYear(@RequestParam int year) {
-    List<Movie> movies = service.findByYear(year);
-    if (movies.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No movies found for the year: " + year);
+    @GetMapping("/search/year")
+    public ResponseEntity<?> searchByYear(@RequestParam int year) {
+        List<Movie> movies = service.findByYear(year);
+        if (movies.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No movies found for the year: " + year);
+        }
+        return ResponseEntity.ok(movies);
     }
-    return ResponseEntity.ok(movies);
-}
 
-@Operation(summary = "Get movies by title and year")
-@GetMapping("/search/title-year")
-public ResponseEntity<?> searchByTitleAndYear(@RequestParam String title, @RequestParam int year) {
-    List<Movie> movies = service.findByTitleAndYear(title, year);
-    if (movies.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No movies found with the title: " + title + " and the year: " + year);
+    @Operation(summary = "Get movies by title and year")
+    @GetMapping("/search/title-year")
+    public ResponseEntity<?> searchByTitleAndYear(@RequestParam String title, @RequestParam int year) {
+        List<Movie> movies = service.findByTitleAndYear(title, year);
+        if (movies.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No movies found with the title: " + title + " and the year: " + year);
+        }
+        return ResponseEntity.ok(movies);
     }
-    return ResponseEntity.ok(movies);
-}
 
 }

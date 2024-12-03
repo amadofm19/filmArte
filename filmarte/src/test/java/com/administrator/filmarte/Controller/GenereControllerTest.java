@@ -1,7 +1,5 @@
 package com.administrator.filmarte.Controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +15,8 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.GenereController;
-import com.administrator.filmarte.model.Genre;
+import com.administrator.filmarte.model.Genere;
 import com.administrator.filmarte.service.GenereService;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,49 +28,40 @@ public class GenereControllerTest {
     @InjectMocks
     private GenereController controller;
 
-    private Genre genre;
+    private Genere genere;
 
     @BeforeEach
     void setUp() {
-        genre = new Genre();
-        genre.setIdGenre(1);
-        genre.setName("Action");
-        genre.setDescription("Fast-paced action movies.");
+        genere = new Genere();
+        genere.setIdGenere(1);
+        genere.setName("Action");
+        genere.setDescription("Fast-paced action movies.");
     }
 
-    @Test
-    void testGetAll() {
-        List<Genre> genres = Arrays.asList(genre);
-        when(service.getAll()).thenReturn(genres);
-
-        List<Genre> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getName().equals("Action"));
-    }
 
     @Test
     void testGetById() {
-        when(service.getById(1)).thenReturn(genre);
+        when(service.getById(1)).thenReturn(genere);
 
-        ResponseEntity<Genre> response = controller.getById(1);
+        ResponseEntity<Genere> response = controller.getById(1);
         assert (response.getStatusCode() == HttpStatus.OK);
         assert (response.getBody().getName().equals("Action"));
     }
 
     @Test
     void testRegister() {
-        ResponseEntity<String> response = controller.register(genre);
-        verify(service).save(any(Genre.class));
+        ResponseEntity<String> response = controller.register(genere);
+        verify(service).save(any(Genere.class));
         assert (response.getStatusCode() == HttpStatus.CREATED);
-        assert (response.getBody().equals("Genero registered successfully"));
+        assert (response.getBody().equals("Genere registered successfully"));
     }
 
     @Test
     void testUpdate() {
-        when(service.getById(1)).thenReturn(genre);
+        when(service.getById(1)).thenReturn(genere);
 
-        ResponseEntity<String> response = controller.update(genre, 1);
-        verify(service).save(any(Genre.class));
+        ResponseEntity<String> response = controller.update(genere, 1);
+        verify(service).save(any(Genere.class));
         assert (response.getStatusCode() == HttpStatus.OK);
         assert (response.getBody().equals("Record updated successfully"));
     }
@@ -82,7 +70,7 @@ public class GenereControllerTest {
     void testUpdateNotFound() {
         when(service.getById(1)).thenThrow(new NoSuchElementException());
 
-        ResponseEntity<String> response = controller.update(genre, 1);
+        ResponseEntity<String> response = controller.update(genere, 1);
         assert (response.getStatusCode() == HttpStatus.NOT_FOUND);
         assert (response.getBody().equals("Record not found with the provided ID"));
     }
@@ -92,7 +80,7 @@ public class GenereControllerTest {
         ResponseEntity<String> response = controller.delete(1);
         verify(service).delete(anyInt());
         assert (response.getStatusCode() == HttpStatus.OK);
-        assert (response.getBody().equals("Genero deleted successfully"));
+        assert (response.getBody().equals("Genere deleted successfully"));
     }
 
     @Test

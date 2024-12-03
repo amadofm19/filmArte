@@ -16,7 +16,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -30,7 +29,6 @@ public class Movie {
     @JsonProperty("idMovie")
     private int idMovie;
 
-    @NotNull(message = "The title cannot be null.")
     @NotBlank(message = "The title cannot be blank.")
     @Size(min = 1, max = 100, message = "The title must have between 1 and 100 characters.")
     @Schema(description = "Title of the movie.", example = "Inception", required = true)
@@ -38,7 +36,7 @@ public class Movie {
     @JsonProperty("title")
     private String title;
 
-    @NotNull(message = "The year cannot be null.")
+    @NotBlank(message = "The year cannot be blank.")
     @Schema(description = "Year the movie was released.", example = "2010", required = true)
     @Column(name = "year")
     @JsonProperty("year")
@@ -51,48 +49,40 @@ public class Movie {
     @JsonProperty("description")
     private String description;
 
-    // Relación con Category
     @ManyToOne
     @JoinColumn(name = "idCategory", nullable = false)
     @JsonProperty("category")
     private Category category;
 
-    // Relación con Genre
     @ManyToOne
-    @JoinColumn(name = "idGenre", nullable = false)
-    @JsonProperty("genre")
-    private Genre genre;
+    @JoinColumn(name = "idGenere", nullable = false)
+    @JsonProperty("genere")
+    private Genere genere;
 
-    // Relación con Administrator
     @ManyToOne
     @JoinColumn(name = "idAdministrator", nullable = false)
     @JsonProperty("administrator")
     private Administrator administrator;
 
-    // Relación con Director
     @ManyToOne
     @JoinColumn(name = "idDirector", nullable = false)
     @JsonProperty("director")
     private Director director;
-    // RELATION MOVIE
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<History> historys;
 
-    // Relación con Reward
-    @OneToMany(mappedBy = "movie") 
-    @JsonProperty("rewards") 
+    @OneToMany(mappedBy = "movie")
+    @JsonProperty("rewards")
     private List<Reward> rewards;
 
-
-    // Getters y Setters
-
-    public Movie(Administrator administrator, Category category, String description, Director director, Genre genre, List<History> historys, int idMovie, List<Reward> rewards, String title, int year) {
+    public Movie(Administrator administrator, Category category, String description, Director director, Genere genere, List<History> historys, int idMovie, List<Reward> rewards, String title, int year) {
         this.administrator = administrator;
         this.category = category;
         this.description = description;
         this.director = director;
-        this.genre = genre;
+        this.genere = genere;
         this.historys = historys;
         this.idMovie = idMovie;
         this.rewards = rewards;
@@ -103,9 +93,6 @@ public class Movie {
     public Movie() {
 
     }
-
-
-    
 
     public int getIdMovie() {
         return idMovie;
@@ -147,12 +134,12 @@ public class Movie {
         this.category = category;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public Genere getGenere() {
+        return genere;
     }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+    public void setGenere(Genere genere) {
+        this.genere = genere;
     }
 
     public Administrator getAdministrator() {
@@ -179,23 +166,23 @@ public class Movie {
         this.rewards = rewards;
     }
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "idMovie=" + idMovie +
-                ", title='" + title + '\'' +
-                ", year=" + year +
-                ", description='" + description + '\'' +
-                ", category=" + category +
-                ", administrator=" + administrator +
-                '}';
-    }
-
     public List<History> getHistorys() {
         return historys;
     }
 
     public void setHistorys(List<History> historys) {
         this.historys = historys;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{"
+                + "idMovie=" + idMovie
+                + ", title='" + title + '\''
+                + ", year=" + year
+                + ", description='" + description + '\''
+                + ", category=" + category
+                + ", administrator=" + administrator
+                + '}';
     }
 }

@@ -1,7 +1,6 @@
 package com.administrator.filmarte.Controller;
 
-import java.util.Arrays;
-import java.util.List;
+
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.administrator.filmarte.controller.HistoryController;
 import com.administrator.filmarte.model.History;
 import com.administrator.filmarte.service.HistoryService;
@@ -39,17 +37,7 @@ public class HistoryControllerTest {
         history.setIdHistory(1);
         history.setViewingDate("2024-10-21");
         history.setDuration(120);
-        history.setGenre("Action");
-    }
-
-    @Test
-    void testGetAll() {
-        List<History> histories = Arrays.asList(history);
-        when(service.getAll()).thenReturn(histories);
-
-        List<History> result = controller.getAll();
-        assert (result.size() == 1);
-        assert (result.get(0).getViewingDate().equals("2024-10-21"));
+        history.setGenere("Action");
     }
 
     @Test

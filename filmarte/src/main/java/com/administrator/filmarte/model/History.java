@@ -30,38 +30,36 @@ public class History {
     @Schema(description = "Date when the movie was viewed.", example = "2024-10-21", required = true)
     @Column(name = "viewingDate")
     @JsonProperty("viewingDate")
-    private String viewingDate; // Viewing date
+    private String viewingDate;
 
     @NotNull(message = "The duration cannot be null.")
     @Schema(description = "Duration of the movie in minutes.", example = "120", required = true)
     @Column(name = "duration")
     @JsonProperty("duration")
-    private int duration; // Duration in minutes
+    private int duration;
 
-    @NotBlank(message = "The genre cannot be blank.")
-    @Size(max = 100, message = "The genre must have a maximum of 100 characters.")
-    @Schema(description = "Genre of the movie.", example = "Action", required = true)
-    @Column(name = "genre")
-    @JsonProperty("genre")
-    private String genre; // Movie genre
+    @NotBlank(message = "The genere cannot be blank.")
+    @Size(max = 100, message = "The genere must have a maximum of 100 characters.")
+    @Schema(description = "Genere of the movie.", example = "Action", required = true)
+    @Column(name = "genere")
+    @JsonProperty("genere")
+    private String genere;
 
     @ManyToOne
     @JoinColumn(name = "idMovie")
     private Movie movie;
 
-    public History(int duration, String genre, int idHistory, Movie movie, String viewingDate) {
+    public History(int duration, String genere, int idHistory, Movie movie, String viewingDate) {
         this.duration = duration;
-        this.genre = genre;
+        this.genere = genere;
         this.idHistory = idHistory;
         this.movie = movie;
         this.viewingDate = viewingDate;
     }
 
     public History() {
- 
+
     }
-
-
 
     public int getIdHistory() {
         return idHistory;
@@ -87,23 +85,12 @@ public class History {
         this.duration = duration;
     }
 
-    public String getGenre() {
-        return genre;
+    public String getGenere() {
+        return genere;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    @Override
-    public String toString() {
-        return "History{" +
-                "idHistory=" + idHistory +
-                ", viewingDate='" + viewingDate + '\'' +
-                ", duration=" + duration +
-                ", genre='" + genre + '\'' +
-                ", movie='" + movie + '\'' +
-                '}';
+    public void setGenere(String genere) {
+        this.genere = genere;
     }
 
     public Movie getMovie() {
@@ -113,4 +100,16 @@ public class History {
     public void setMovie(Movie movie) {
         this.movie = movie;
     }
+
+    @Override
+    public String toString() {
+        return "History{"
+                + "idHistory=" + idHistory
+                + ", viewingDate='" + viewingDate + '\''
+                + ", duration=" + duration
+                + ", genere='" + genere + '\''
+                + ", movie='" + movie + '\''
+                + '}';
+    }
+
 }
